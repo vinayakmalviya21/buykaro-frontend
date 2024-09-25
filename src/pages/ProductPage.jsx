@@ -57,7 +57,7 @@ const ProductPage = () => {
 
       {/* Product List */}
       <div className="w-full lg:w-3/4 p-4">
-        <h1 className="text-3xl font-bold mb-8">Products in {categoryName}</h1>
+        <h1 className="text-3xl font-bold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500 ">Products in {categoryName}</h1>
         
         {/* Flex container for products */}
         <div className="flex flex-wrap -mx-4">
@@ -69,7 +69,7 @@ const ProductPage = () => {
                   alt={product.name}
                   className="w-full h-40 object-cover rounded mb-4"
                 />
-                <h2 className="text-xl font-semibold">{product.name}</h2>
+                <h2 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-green-500 mb-2">{product.name}</h2>
                 <p className="text-gray-600">{product.price}</p>
                 <p className="text-gray-500">{product.details}</p>
                 <button className="mt-2 bg-blue-500 text-white py-1 px-3 rounded">Add to Cart</button>

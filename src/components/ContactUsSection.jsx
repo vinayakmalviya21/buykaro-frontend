@@ -91,12 +91,14 @@ export default function ContactUsSection() {
             />
           </div>
 
-          <button
-            type="submit"
-            className="bg-gradient-to-r from-purple-600 to-blue-500 text-white py-2 px-4 rounded-md font-medium hover:bg-blue-600 transition duration-300 transform hover:scale-105 w-full"
-          >
-            Submit
-          </button>
+          <div className="flex justify-center items-center">
+            <button
+              type="submit"
+              className="bg-gradient-to-r from-purple-600 to-blue-500 text-white py-2 px-4 rounded-md font-medium hover:bg-blue-600 transition duration-300 transform hover:scale-105 w-min flex justify-center items-center"
+            >
+              Submit
+            </button>
+          </div>
         </form>
       </div>
     </section>

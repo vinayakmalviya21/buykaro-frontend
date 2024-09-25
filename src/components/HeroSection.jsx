@@ -6,7 +6,10 @@ export default function HeroSection() {
     <div className="bg-gradient-to-r from-blue-500 to-purple-700 h-screen">
       <div className="flex items-center justify-center h-full bg-black bg-opacity-60">
         <div className="text-center px-6 md:px-12">
-          <h1 className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-pink-600 text-5xl md:text-7xl font-bold mb-4 drop-shadow-lg">
+          <h1
+            className="text-5xl md:text-7xl font-bold mb-4 drop-shadow-lg
+           bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-green-500"
+          >
             <Typewriter
               words={["Discover Your Next Favorite Product"]}
               loop={1}

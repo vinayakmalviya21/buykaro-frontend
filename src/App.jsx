@@ -16,16 +16,16 @@ function App() {
   return (
     <>
       <Navbar />
-      {/* <CategoryPage /> */}
-      {/* <ProductPage /> */}
-      {/* <ProductDetailsPage /> */}
-      {/* <ProfilePage /> */}
-      {/* <MyCartPage /> */}
+      <LandingPage />
+      <ContactUsPage />
+      <Login />
+      <Signup />
+      <ProfilePage />
+      <CategoryPage />
+      <ProductPage />
+      <ProductDetailsPage />
+      <MyCartPage />
       <BuyNow />
-      {/* <Signup /> */}
-      {/* <Login /> */}
-      {/* <LandingPage /> */}
-      {/* <ContactUsPage /> */}
       <Footer />
     </>
   );

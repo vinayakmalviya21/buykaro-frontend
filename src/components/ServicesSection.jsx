@@ -42,7 +42,7 @@ export default function ServicesSection() {
             >
               <div className="flex items-center mb-4">
                 <div className="mr-4">{service.icon}</div>
-                <h3 className="text-2xl font-semibold text-gray-800">
+                <h3 className="text-2xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-green-500">
                   {service.title}
                 </h3>
               </div>

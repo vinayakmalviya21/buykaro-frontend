@@ -5,7 +5,7 @@ import fashionImage from "../assets/images/fashion-image.jpg";
 
 const categories = [
   {
-    name: "Beauty, Food, Toys & more",
+    name: "Beauty & Food",
     products: [
       {
         id: 1,
@@ -386,7 +386,7 @@ const CategoryPage = () => {
                     alt={product.title}
                     className="w-full h-36 object-cover mb-3 rounded"
                   />
-                  <h3 className="text-sm font-semibold">{product.title}</h3>
+                  <h3 className="text-md font-semibold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-green-500 mb-2">{product.title}</h3>
                   <p className="text-gray-500 text-sm">{product.offer}</p>
                 </div>
               ))}

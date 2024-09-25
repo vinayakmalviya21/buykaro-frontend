@@ -121,7 +121,7 @@ const ProductDetailsPage = () => {
       <div className="mt-12 lg:pl-12">
         {" "}
         {/* Add padding on large screens */}
-        <h2 className="text-2xl font-bold mb-4">Product Details</h2>
+        <h2 className="text-2xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-green-500 ">Product Details</h2>
         <p className="text-gray-700 mb-2">
           <strong>Screen Size:</strong> 27 inches
         </p>

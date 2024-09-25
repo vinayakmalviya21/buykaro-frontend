@@ -16,7 +16,7 @@ export default function ContactUsPage() {
 
         <div className="flex flex-wrap lg:flex-nowrap justify-between gap-8">
           <div className="w-full lg:w-8/12 p-8 bg-white rounded-2xl shadow-xl">
-            <h3 className="text-3xl font-bold text-blue-600 mb-8">
+            <h3 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-green-500 mb-8">
               Send Us a Message
             </h3>
             <form className="space-y-8">
@@ -52,7 +52,7 @@ export default function ContactUsPage() {
               </div>
               <button
                 type="submit"
-                className="w-full bg-gradient-to-r from-purple-600 to-blue-500 text-white py-3 px-6 rounded-full font-semibold hover:bg-blue-600 transition duration-300 transform hover:scale-105"
+                className="w-max bg-gradient-to-r from-purple-600 to-blue-500 text-white py-3 px-6 rounded-full font-semibold hover:bg-blue-600 transition duration-300 transform hover:scale-105"
               >
                 Send Message
               </button>

@@ -26,7 +26,9 @@ const EditProfileModal = ({ toggleEditProfile }) => {
   return (
     <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center">
       <div className="bg-white rounded-lg shadow-lg w-11/12 md:w-1/2 p-6 relative">
-        <h2 className="text-2xl font-bold mb-4">Edit Profile</h2>
+        <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-green-500 mb-4">
+          Edit Profile
+        </h2>
 
         <div className="space-y-4">
           <div>
@@ -76,13 +78,13 @@ const EditProfileModal = ({ toggleEditProfile }) => {
 
         <div className="flex justify-end space-x-4 mt-6">
           <button
-            className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 transition"
+            className="cursor-pointer bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 transition"
             onClick={toggleEditProfile}
           >
             Cancel
           </button>
           <button
-            className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition"
+            className="cursor-pointer bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition"
             onClick={handleSave}
           >
             Save
