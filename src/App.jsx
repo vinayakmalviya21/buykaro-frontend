@@ -1,11 +1,16 @@
 import "./App.css";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+import LandingPage from './pages/LandingPage';
+import ContactUsPage from './pages/ContactUsPage';
 
 function App() {
   return (
     <>
-      <h1 className="text-green-700 underline">
-        Hello world!
-      </h1>
+      <Navbar />
+      <LandingPage />
+      <ContactUsPage />
+      <Footer />
     </>
   );
 }
