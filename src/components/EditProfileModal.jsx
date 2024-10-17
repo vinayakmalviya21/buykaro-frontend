@@ -1,101 +1,147 @@
 import React, { useState } from "react";
+import axios from "axios";
+import Swal from "sweetalert2";
 
-const EditProfileModal = ({ toggleEditProfile }) => {
-  const [formData, setFormData] = useState({
-    name: "John Doe",
-    email: "johndoe@email.com",
-    phone: "123-456-7890",
-    address: "1234 Street Name, City, Country",
-  });
+const EditProfileModal = ({ toggleEditProfile, user, updateUserDetails }) => {
+    const [formData, setFormData] = useState({
+        phone: user.phone || "",
+        address: user.shippingAddress.address || "",
+        city: user.shippingAddress.city || "",
+        postalCode: user.shippingAddress.postalCode || "",
+        country: user.shippingAddress.country || "",
+    });
 
-  // Handle input changes
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
 
-  const handleSave = () => {
-    // Save the profile information (send to backend or update state)
-    console.log("Profile updated:", formData);
-    toggleEditProfile(); // Close the modal
-  };
+        setFormData((prevData) => ({
+            ...prevData,
+            [name]: value,
+        }));
+    };
 
-  return (
-    <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center">
-      <div className="bg-white rounded-lg shadow-lg w-11/12 md:w-1/2 p-6 relative">
-        <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-green-500 mb-4">
-          Edit Profile
-        </h2>
+    const handleSave = async () => {
+        const userId = user.id;
+        try {
+            const response = await axios.put(
+                `${import.meta.env.VITE_API_URL}/api/users/edit-profile`,
+                { ...formData, userId },
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
 
-        <div className="space-y-4">
-          <div>
-            <label className="block text-gray-700">Name</label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleInputChange}
-              className="w-full p-2 border border-gray-300 rounded"
-            />
-          </div>
+            if (response.status === 200) {
+                Swal.fire({
+                    icon: "success",
+                    title: "Profile Updated",
+                    text: "Your profile details have been updated.",
+                });
 
-          <div>
-            <label className="block text-gray-700">Email</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleInputChange}
-              className="w-full p-2 border border-gray-300 rounded"
-            />
-          </div>
+                const updatedUser = response.data.user;
 
-          <div>
-            <label className="block text-gray-700">Phone</label>
-            <input
-              type="text"
-              name="phone"
-              value={formData.phone}
-              onChange={handleInputChange}
-              className="w-full p-2 border border-gray-300 rounded"
-            />
-          </div>
+                localStorage.setItem("user", JSON.stringify(updatedUser));
 
-          <div>
-            <label className="block text-gray-700">Address</label>
-            <input
-              type="text"
-              name="address"
-              value={formData.address}
-              onChange={handleInputChange}
-              className="w-full p-2 border border-gray-300 rounded"
-            />
-          </div>
+                updateUserDetails(updatedUser);
+                toggleEditProfile();
+            }
+        } catch (error) {
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "Failed to update profile. Please try again.",
+            });
+        }
+    };
+
+    return (
+        <div className="fixed mt-10 inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center">
+            <div className="bg-white rounded-lg shadow-lg w-11/12 md:w-1/2 lg:w-1/3 p-6 relative">
+                <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-green-500 mb-4">
+                    Edit Profile
+                </h2>
+
+                <div className="space-y-4">
+                    <div>
+                        <label className="block text-gray-700">Phone</label>
+                        <input
+                            type="text"
+                            name="phone"
+                            value={formData.phone}
+                            onChange={handleInputChange}
+                            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="Enter your phone number"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-gray-700">Street Address</label>
+                        <input
+                            type="text"
+                            name="address"
+                            value={formData.address}
+                            onChange={handleInputChange}
+                            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="Enter your street address"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-gray-700">City</label>
+                        <input
+                            type="text"
+                            name="city"
+                            value={formData.city}
+                            onChange={handleInputChange}
+                            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="Enter your city"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-gray-700">Postal Code</label>
+                        <input
+                            type="text"
+                            name="postalCode"
+                            value={formData.postalCode}
+                            onChange={handleInputChange}
+                            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="Enter your postal code"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-gray-700">Country</label>
+                        <input
+                            type="text"
+                            name="country"
+                            value={formData.country}
+                            onChange={handleInputChange}
+                            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="Enter your country"
+                        />
+                    </div>
+                </div>
+
+                <div className="flex justify-end space-x-4 mt-6">
+                    <button
+                        className="cursor-pointer bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 transition"
+                        onClick={toggleEditProfile}
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        className="cursor-pointer bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition"
+                        onClick={handleSave}
+                    >
+                        Save
+                    </button>
+                </div>
+            </div>
         </div>
-
-        <div className="flex justify-end space-x-4 mt-6">
-          <button
-            className="cursor-pointer bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 transition"
-            onClick={toggleEditProfile}
-          >
-            Cancel
-          </button>
-          <button
-            className="cursor-pointer bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition"
-            onClick={handleSave}
-          >
-            Save
-          </button>
-        </div>
-
-        {/* Close the modal when clicking outside */}
-        <div className="absolute inset-0" onClick={toggleEditProfile}></div>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default EditProfileModal;
