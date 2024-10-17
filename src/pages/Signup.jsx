@@ -32,22 +32,13 @@ export default function Signup() {
       );
 
       if (response.status === 200) {
-        console.log(response.data);
-        
-        // Store user data in local storage
-        localStorage.setItem("user", JSON.stringify({
-          userId: response.data.userId,
-          userName: response.data.userName,
-          email: response.data.email,
-        }));
-
         Swal.fire({
           icon: "success",
           title: "Registration Successful!",
           text: "You have been registered successfully.",
           confirmButtonText: "Okay",
         }).then(() => {
-          navigate("/");
+          navigate("/login");
         });
       } else {
         Swal.fire({
