@@ -1,11 +1,78 @@
-import React, { useState } from "react"; 
+import React, { useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 export default function Signup() {
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false); 
-  
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const navigate = useNavigate();
+
   const togglePasswordVisibility = () => {
-    setIsPasswordVisible(!isPasswordVisible); 
+    setIsPasswordVisible(!isPasswordVisible);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/users/signup`,
+        { name, email, password },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          maxBodyLength: Infinity,
+        }
+      );
+
+      if (response.status === 200) {
+        console.log(response.data);
+        
+        // Store user data in local storage
+        localStorage.setItem("user", JSON.stringify({
+          userId: response.data.userId,
+          userName: response.data.userName,
+          email: response.data.email,
+        }));
+
+        Swal.fire({
+          icon: "success",
+          title: "Registration Successful!",
+          text: "You have been registered successfully.",
+          confirmButtonText: "Okay",
+        }).then(() => {
+          navigate("/");
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Registration Failed",
+          text: response.data.message || "Failed to sign up.",
+          confirmButtonText: "Okay",
+        });
+      }
+    } catch (error) {
+      console.error("Error details:", error);
+      let errorMessage = "An error occurred. Please try again.";
+
+      if (error.response) {
+        errorMessage = error.response.data.message || "Failed to sign up.";
+      } else if (error.request) {
+        errorMessage = "No response from the server. Please try again.";
+      }
+      Swal.fire({
+        icon: "error",
+        title: "Sign Up Error",
+        text: errorMessage,
+        confirmButtonText: "Okay",
+      });
+    }
   };
 
   return (
@@ -14,7 +81,7 @@ export default function Signup() {
         <h2 className="text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500 mb-6">
           Create Account
         </h2>
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label
               className="block text-gray-700 text-sm font-semibold mb-2"
@@ -27,6 +94,8 @@ export default function Signup() {
               id="name"
               className="border border-gray-300 rounded-lg py-2 px-4 w-full focus:outline-none focus:border-blue-500"
               placeholder="John Doe"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               required
             />
           </div>
@@ -43,6 +112,8 @@ export default function Signup() {
               id="email"
               className="border border-gray-300 rounded-lg py-2 px-4 w-full focus:outline-none focus:border-blue-500"
               placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>
@@ -55,10 +126,12 @@ export default function Signup() {
               Password
             </label>
             <input
-              type={isPasswordVisible ? "text" : "password"} 
+              type={isPasswordVisible ? "text" : "password"}
               id="password"
               className="border border-gray-300 rounded-lg py-2 px-4 pr-10 w-full focus:outline-none focus:border-blue-500"
               placeholder="********"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               required
             />
             <button

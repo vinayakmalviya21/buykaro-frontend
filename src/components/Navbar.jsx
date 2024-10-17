@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import {
-  FiUser,
   FiMenu,
   FiShoppingCart,
   FiX,
@@ -9,10 +9,40 @@ import {
   FiPhone,
 } from "react-icons/fi";
 import { FaUserCircle } from "react-icons/fa";
+import Swal from "sweetalert2";
 
-export default function Navbar() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+const Navbar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null); 
+  const navigate = useNavigate();
+
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    Swal.fire({
+      icon: "success",
+      title: "Logged Out",
+      text: "You have been successfully logged out.",
+    }).then(() => {
+      navigate("/");
+    });
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [dropdownRef]);
 
   return (
     <>
@@ -20,44 +50,74 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex-shrink-0 flex items-center">
-              <h1 className="text-2xl font-bold text-blue-600">buyKaro</h1>
+              <h1 className="text-2xl font-bold text-blue-600">
+                <a href="/">buyKaro</a>
+              </h1>
             </div>
 
             <div className="hidden sm:flex sm:items-center">
               <div className="flex space-x-4">
-                <a
-                  href="#"
-                  className="relative text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-blue-500 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 after:origin-left"
+                <Link
+                  to="/"
+                  className="relative text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-md font-medium after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-blue-500 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 after:origin-left"
                 >
                   Home
-                </a>
-                <a
-                  href="#"
-                  className="relative text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-blue-500 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 after:origin-left"
+                </Link>
+                <Link
+                  to="/category"
+                  className="relative text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-md font-medium after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-blue-500 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 after:origin-left"
                 >
-                  Products
-                </a>
-
-                <a
-                  href="#"
-                  className="relative text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-blue-500 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 after:origin-left"
+                  Categories
+                </Link>
+                <Link
+                  to="/contact"
+                  className="relative text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-md font-medium after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-blue-500 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 after:origin-left"
                 >
                   Contact Us
-                </a>
-                <a
-                  href="#"
-                  className="relative text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-blue-500 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 after:origin-left"
+                </Link>
+                <Link
+                  to="/my-cart"
+                  className="relative text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-md font-medium after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-blue-500 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 after:origin-left"
                 >
                   Cart <FiShoppingCart className="inline h-5 w-5" />
-                </a>
-                {!isLoggedIn ? (
-                  <button 
-                  className="bg-gradient-to-r from-purple-600 to-blue-500 text-white py-2 px-4 rounded-md font-medium hover:bg-blue-600 transition duration-300 transform hover:scale-105"
+                </Link>
+                {user ? (
+                  <div
+                    className="relative inline-block text-left"
+                    ref={dropdownRef}
+                  >
+                    <FaUserCircle
+                      className="h-8 w-8 text-black cursor-pointer"
+                      onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                    />
+                    {isDropdownOpen && (
+                      <div className="absolute right-0 mt-2 w-48 bg-gray-200 border border-gray-200 rounded-md shadow-lg z-10">
+                        <Link
+                          to="/profile"
+                          className="block px-4 py-2 text-md text-black hover:bg-gray-100"
+                          onClick={() => setIsDropdownOpen(false)} 
+                        >
+                          Profile
+                        </Link>
+                        <button
+                          onClick={() => {
+                            handleLogout();
+                            setIsDropdownOpen(false);
+                          }}
+                          className="block w-full text-left px-4 py-2 text-md text-black hover:bg-gray-100"
+                        >
+                          Logout
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <Link
+                    to="/login"
+                    className="ml-4 bg-gradient-to-r from-purple-600 to-blue-500 text-white py-2 px-4 rounded-md font-medium hover:bg-blue-600 transition duration-300 transform hover:scale-105"
                   >
                     Sign In
-                  </button>
-                ) : (
-                  <FaUserCircle className="h-8 w-8 text-gray-700 cursor-pointer" />
+                  </Link>
                 )}
               </div>
             </div>
@@ -95,49 +155,70 @@ export default function Navbar() {
           </div>
 
           <div className="mt-8 space-y-4 text-black">
-            <a
-              href="#"
+            <Link
+              to="/"
               className="flex items-center space-x-2 px-4 py-2 text-lg font-medium hover:bg-gray-100"
               onClick={() => setIsSidebarOpen(false)}
             >
               <FiHome className="h-5 w-5 text-blue-600" />
               <span>Home</span>
-            </a>
-            <a
-              href="#"
+            </Link>
+            <Link
+              to="/category"
               className="flex items-center space-x-2 px-4 py-2 text-lg font-medium hover:bg-gray-100"
               onClick={() => setIsSidebarOpen(false)}
             >
-              <FiPackage className="h-5 w-5 text-green-600" />{" "}
-              <span>Products</span>
-            </a>
-            <a
-              href="#"
+              <FiPackage className="h-5 w-5 text-green-600" />
+              <span>Categories</span>
+            </Link>
+            <Link
+              to="/contact"
               className="flex items-center space-x-2 px-4 py-2 text-lg font-medium hover:bg-gray-100"
               onClick={() => setIsSidebarOpen(false)}
             >
-              <FiPhone className="h-5 w-5 text-red-600" />{" "}
+              <FiPhone className="h-5 w-5 text-red-600" />
               <span>Contact Us</span>
-            </a>
-            <a
-              href="#"
+            </Link>
+            <Link
+              to="/my-cart"
               className="flex items-center space-x-2 px-4 py-2 text-lg font-medium hover:bg-gray-100"
               onClick={() => setIsSidebarOpen(false)}
             >
-              <FiShoppingCart className="h-5 w-5 text-orange-600" />{" "}
+              <FiShoppingCart className="h-5 w-5 text-orange-600" />
               <span>Cart</span>
-            </a>
+            </Link>
 
-            {!isLoggedIn ? (
-              <button className="ml-4 bg-gradient-to-r from-purple-600 to-blue-500 text-white py-2 px-4 rounded-md font-medium hover:bg-blue-600 transition duration-300 transform hover:scale-105">
-                Sign In
-              </button>
-            ) : (
-              <FaUserCircle className="h-10 w-10 text-gray-700 mx-auto cursor-pointer" />
-            )}
+            <div className="mt-4 flex flex-col items-start ml-4 gap-4">
+              {user ? (
+                <>
+                  <span className="text-lg font-semibold text-black mb-2">
+                    Username: {user.name || "User"}
+                  </span>
+                  <button
+                    onClick={() => {
+                      handleLogout(); 
+                      setIsSidebarOpen(false);
+                    }}
+                    className="bg-gradient-to-r from-purple-600 to-blue-500 text-white py-2 px-4 rounded-md font-medium hover:bg-blue-600 transition duration-300 transform hover:scale-105"
+                  >
+                    <span>Logout</span>
+                  </button>
+                </>
+              ) : (
+                <Link
+                  to="/login"
+                  className="bg-gradient-to-r from-purple-600 to-blue-500 text-white py-2 px-4 rounded-md font-medium hover:bg-blue-600 transition duration-300 transform hover:scale-105"
+                  onClick={() => setIsSidebarOpen(false)}
+                >
+                  Sign In
+                </Link>
+              )}
+            </div>
           </div>
         </div>
       </div>
     </>
   );
-}
+};
+
+export default Navbar;

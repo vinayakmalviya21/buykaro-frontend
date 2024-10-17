@@ -1,11 +1,67 @@
 import React, { useState } from "react";
-import { FiEye, FiEyeOff } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+import axios from "axios";
+import { FiEye, FiEyeOff } from "react-icons/fi"; 
 
-export default function Login() {
+const Login = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const togglePasswordVisibility = () => {
-    setIsPasswordVisible(!isPasswordVisible);
+    setIsPasswordVisible((prev) => !prev);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/users/login`,
+        { email, password }
+      );
+
+      if (response.status === 200) {
+        const { token, user } = response.data;
+
+        localStorage.setItem("token", token);
+        localStorage.setItem("user", JSON.stringify(user));
+
+        Swal.fire({
+          icon: "success",
+          title: "Login Successful!",
+          text: "Welcome back!",
+        }).then(() => {
+          navigate("/"); 
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Login Failed",
+          text: response.data.message || "Failed to log in.",
+        });
+      }
+    } catch (error) {
+      console.error("Error details:", error);
+      let errorMessage = "An error occurred. Please try again.";
+
+      if (error.response) {
+        errorMessage = error.response.data.message || "Failed to log in.";
+      } else if (error.request) {
+        errorMessage = "No response from the server. Please try again.";
+      }
+
+      Swal.fire({
+        icon: "error",
+        title: "Login Error",
+        text: errorMessage,
+        confirmButtonText: "Okay",
+      });
+    } finally {
+      setEmail("");
+      setPassword("");
+    }
   };
 
   return (
@@ -14,17 +70,16 @@ export default function Login() {
         <h2 className="text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500 mb-6">
           Welcome Back
         </h2>
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label
-              className="block text-gray-700 text-sm font-semibold mb-2"
-              htmlFor="email"
-            >
+            <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="email">
               Email
             </label>
             <input
               type="email"
               id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)} 
               className="border border-gray-300 rounded-lg py-2 px-4 w-full focus:outline-none focus:border-blue-500"
               placeholder="you@example.com"
               required
@@ -32,23 +87,22 @@ export default function Login() {
           </div>
 
           <div className="mb-4 relative">
-            <label
-              className="block text-gray-700 text-sm font-semibold mb-2"
-              htmlFor="password"
-            >
+            <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="password">
               Password
             </label>
             <input
               type={isPasswordVisible ? "text" : "password"}
               id="password"
-              className="border border-gray-300 rounded-lg py-2 px-4 pr-10 w-full focus:outline-none focus:border-blue-500" 
+              value={password}
+              onChange={(e) => setPassword(e.target.value)} 
+              className="border border-gray-300 rounded-lg py-2 px-4 pr-10 w-full focus:outline-none focus:border-blue-500"
               placeholder="********"
               required
             />
             <button
               type="button"
               onClick={togglePasswordVisibility}
-              className="mt-6 absolute inset-y-0 right-3 flex items-center text-gray-600 focus:outline-none" 
+              className="mt-6 absolute inset-y-0 right-3 flex items-center text-gray-600 focus:outline-none"
             >
               {isPasswordVisible ? <FiEyeOff size={20} /> : <FiEye size={20} />}
             </button>
@@ -71,4 +125,6 @@ export default function Login() {
       </div>
     </div>
   );
-}
+};
+
+export default Login;

@@ -1,5 +1,6 @@
 import React from "react";
 import { FiFacebook, FiTwitter, FiInstagram, FiLinkedin } from "react-icons/fi";
+import { Link } from "react-router-dom"; // Import Link from react-router-dom
 
 export default function Footer() {
   return (
@@ -10,19 +11,19 @@ export default function Footer() {
             <h2 className="text-lg font-bold text-gray-800">Quick Links</h2>
             <ul className="mt-2 space-y-2">
               <li>
-                <a href="#" className="text-gray-700 hover:text-blue-600">
+                <Link to="/" className="text-gray-700 hover:text-blue-600">
                   Home
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-700 hover:text-blue-600">
+                <Link to="/products" className="text-gray-700 hover:text-blue-600">
                   Products
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-700 hover:text-blue-600">
+                <Link to="/contact" className="text-gray-700 hover:text-blue-600">
                   Contact Us
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
