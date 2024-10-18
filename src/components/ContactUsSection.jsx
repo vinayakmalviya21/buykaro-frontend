@@ -7,17 +7,44 @@ export default function ContactUsSection() {
     message: "",
   });
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission logic (e.g., sending data to a server)
-    console.log("Form data submitted:", formData);
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/contact/contact-us`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
+
+      if (response.ok) {
+        alert("Message sent successfully!");
+        setFormData({ name: "", email: "", message: "" });
+      } else {
+        alert("Failed to send message, please try again later.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("An error occurred while sending the message.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -31,74 +58,56 @@ export default function ContactUsSection() {
           get in touch as soon as possible.
         </p>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-            <div className="form-group">
-              <label
-                htmlFor="name"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Name
-              </label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                placeholder="Enter your name"
-              />
-            </div>
-
-            <div className="form-group">
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Email
-              </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                placeholder="Enter your email"
-              />
-            </div>
+        <form className="space-y-6" onSubmit={handleSubmit}>
+          <div>
+            <label className="block text-gray-700 font-semibold mb-2">
+              Your Name
+            </label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700"
+              placeholder="Enter your name"
+              required
+            />
           </div>
-
-          <div className="form-group">
-            <label
-              htmlFor="message"
-              className="block text-sm font-medium text-gray-700"
-            >
+          <div>
+            <label className="block text-gray-700 font-semibold mb-2">
+              Email Address
+            </label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700"
+              placeholder="Enter your email"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-gray-700 font-semibold mb-2">
               Message
             </label>
             <textarea
-              id="message"
               name="message"
               value={formData.message}
               onChange={handleChange}
+              rows="6"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700"
+              placeholder="Write your message here"
               required
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              placeholder="Enter your message"
-              rows="4"
-            />
+            ></textarea>
           </div>
-
-          <div className="flex justify-center items-center">
-            <button
-              type="submit"
-              className="bg-gradient-to-r from-purple-600 to-blue-500 text-white py-2 px-4 rounded-md font-medium hover:bg-blue-600 transition duration-300 transform hover:scale-105 w-min flex justify-center items-center"
-            >
-              Submit
-            </button>
-          </div>
+          <button
+            type="submit"
+            className="w-max bg-gradient-to-r from-purple-600 to-blue-500 text-white py-3 px-6 rounded-full font-semibold hover:bg-blue-600 transition duration-300 transform hover:scale-105"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Sending..." : "Send Message"}
+          </button>
         </form>
       </div>
     </section>

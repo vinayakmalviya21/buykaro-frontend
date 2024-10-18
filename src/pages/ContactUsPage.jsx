@@ -1,7 +1,53 @@
-import React from "react";
-import { FaPhoneAlt, FaMapMarkerAlt, FaEnvelope } from "react-icons/fa"; // Optional Icons for contact details
+import React, { useState } from "react";
+import { FaPhoneAlt, FaMapMarkerAlt, FaEnvelope } from "react-icons/fa";
 
 export default function ContactUsPage() {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/contact/contact-us`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
+
+      if (response.ok) {
+        alert("Message sent successfully!");
+        setFormData({ name: "", email: "", message: "" });
+      } else {
+        alert("Failed to send message, please try again later.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("An error occurred while sending the message.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-300 py-8">
       <div className="container mx-auto px-6">
@@ -19,15 +65,19 @@ export default function ContactUsPage() {
             <h3 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-green-500 mb-8">
               Send Us a Message
             </h3>
-            <form className="space-y-8">
+            <form className="space-y-8" onSubmit={handleSubmit}>
               <div>
                 <label className="block text-gray-700 font-semibold mb-2">
                   Your Name
                 </label>
                 <input
                   type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700"
                   placeholder="Enter your name"
+                  required
                 />
               </div>
               <div>
@@ -36,8 +86,12 @@ export default function ContactUsPage() {
                 </label>
                 <input
                   type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700"
                   placeholder="Enter your email"
+                  required
                 />
               </div>
               <div>
@@ -45,16 +99,21 @@ export default function ContactUsPage() {
                   Message
                 </label>
                 <textarea
+                  name="message"
+                  value={formData.message}
+                  onChange={handleChange}
                   rows="6"
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700"
                   placeholder="Write your message here"
+                  required
                 ></textarea>
               </div>
               <button
                 type="submit"
                 className="w-max bg-gradient-to-r from-purple-600 to-blue-500 text-white py-3 px-6 rounded-full font-semibold hover:bg-blue-600 transition duration-300 transform hover:scale-105"
+                disabled={isSubmitting}
               >
-                Send Message
+                {isSubmitting ? "Sending..." : "Send Message"}
               </button>
             </form>
           </div>
