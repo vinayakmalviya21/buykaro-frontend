@@ -17,14 +17,10 @@ function App() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const storedUserName = localStorage.getItem("userName");
-    const storedUserId = localStorage.getItem("userId");
-    
-    if (storedUserName && storedUserId) {
-      setUser({
-        userName: storedUserName,
-        userId: storedUserId,
-      });
+    const storedUserData = localStorage.getItem("user");
+
+    if (storedUserData) {
+      setUser(JSON.parse(storedUserData));
     }
   }, []);
 
@@ -36,12 +32,18 @@ function App() {
         <Route path="/contact" element={<ContactUsPage />} />
         <Route path="/login" element={<Login setUser={setUser} />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/profile" element={<ProfilePage />} />
+        
+        {user && (
+          <>
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/my-cart" element={<MyCartPage />} />
+            <Route path="/buy-now" element={<BuyNow />} />
+          </>
+        )}
+
         <Route path="/category" element={<CategoryPage />} />
         <Route path="/products" element={<ProductPage />} />
         <Route path="/product-details" element={<ProductDetailsPage />} />
-        <Route path="/my-cart" element={<MyCartPage />} />
-        <Route path="/buy-now" element={<BuyNow />} />
       </Routes>
       <Footer />
     </Router>
