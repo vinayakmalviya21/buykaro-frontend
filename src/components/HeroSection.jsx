@@ -24,7 +24,7 @@ export default function HeroSection() {
           <p className="text-gray-200 text-lg md:text-2xl mb-8">
             Shop the best deals and latest trends at unbeatable prices.
           </p>
-          <a href="/shop-now">
+          <a href="/categoryList">
             <button className="bg-yellow-500 text-black font-semibold py-3 px-6 rounded-full hover:bg-yellow-600 transition duration-300 shadow-lg transform hover:scale-105">
               Shop Now
             </button>

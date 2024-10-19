@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
-import LandingPage from "./pages/LandingPage";
-import ContactUsPage from "./pages/ContactUsPage";
-import ProductPage from "./pages/ProductPage";
-import ProductDetailsPage from "./pages/ProductDetailsPage";
-import CategoryPage from "./pages/CategoryPage";
-import ProfilePage from "./pages/ProfilePage";
-import MyCartPage from "./pages/MyCartPage";
-import BuyNow from "./pages/BuyNow";
-import Signup from "./pages/SignUp";
-import Login from "./pages/Login";
+import Navbar from "./src/components/Navbar";
+import Footer from "./src/components/Footer";
+import LandingPage from "./src/pages/LandingPage";
+import ContactUsPage from "./src/pages/ContactUsPage";
+import ProductPage from "./src/pages/ProductPage";
+import ProductDetailsPage from "./src/pages/ProductDetailsPage";
+import CategoryPage from "./src/pages/CategoryPage";
+import ProfilePage from "./src/pages/ProfilePage";
+import MyCartPage from "./src/pages/MyCartPage";
+import BuyNow from "./src/pages/BuyNow";
+import Signup from "./src/pages/SignUp";
+import Login from "./src/pages/Login";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -41,8 +41,8 @@ function App() {
           </>
         )}
 
-        <Route path="/category" element={<CategoryPage />} />
-        <Route path="/products" element={<ProductPage />} />
+        <Route path="/categoryList" element={<CategoryPage />} />
+        <Route path="/categories-Product/:category_id" element={<ProductPage />} />
         <Route path="/product-details" element={<ProductDetailsPage />} />
       </Routes>
       <Footer />

@@ -2,12 +2,13 @@ import React, { useRef, useState, useEffect } from "react";
 import "../assets/css/CategoryPage.css";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
 import fashionImage from "../assets/images/fashion-image.jpg";
+import { Link } from "react-router-dom";
 
 const CategoryPage = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const scrollRefs = useRef([]); 
+  const scrollRefs = useRef([]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -17,6 +18,7 @@ const CategoryPage = () => {
         );
         if (!response.ok) throw new Error("Failed to fetch categories");
         const data = await response.json();
+        console.log(data);
         setCategories(data);
       } catch (error) {
         setError(error.message);
@@ -30,22 +32,41 @@ const CategoryPage = () => {
 
   const scrollRight = (index) => {
     if (scrollRefs.current[index] && scrollRefs.current[index].current) {
-      scrollRefs.current[index].current.scrollBy({ left: 300, behavior: "smooth" });
+      scrollRefs.current[index].current.scrollBy({
+        left: 300,
+        behavior: "smooth",
+      });
     }
   };
 
   const scrollLeft = (index) => {
     if (scrollRefs.current[index] && scrollRefs.current[index].current) {
-      scrollRefs.current[index].current.scrollBy({ left: -300, behavior: "smooth" });
+      scrollRefs.current[index].current.scrollBy({
+        left: -300,
+        behavior: "smooth",
+      });
     }
   };
 
   if (loading) {
-    return <div className="text-center">Loading categories...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <p className="text-2xl font-semibold">Loading products...</p>
+          <div className="loader mt-4"></div>
+        </div>
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="text-center text-red-500">{error}</div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center text-red-500">
+          <p className="text-2xl font-semibold">{error}</p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -86,21 +107,23 @@ const CategoryPage = () => {
                 ref={scrollRefs.current[index]}
                 className="flex overflow-x-auto space-x-4 hide-scrollbar"
               >
-                {category.products.map((product) => (
-                  <div
-                    key={product.id}
-                    className="flex-shrink-0 w-48 border p-3 rounded-lg shadow-sm hover:shadow-lg transition duration-300"
-                  >
-                    <img
-                      src={product.image || fashionImage}
-                      alt={product.title}
-                      className="w-full h-36 object-cover mb-3 rounded"
-                    />
-                    <h3 className="text-md font-semibold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-green-500 mb-2">
-                      {product.title}
-                    </h3>
-                    <p className="text-gray-500 text-sm">{product.offer}</p>
-                  </div>
+                {category.productList.map((product, index) => (
+                  <Link key={index} to={`/categories-Product/${category._id}`}>
+                    <div
+                      key={product._id}
+                      className="cursor-pointer flex-shrink-0 w-48 border p-3 rounded-lg shadow-sm hover:shadow-lg transition duration-300"
+                    >
+                      <img
+                        src={product.image || fashionImage}
+                        alt={product.name}
+                        className="w-full h-36 object-cover mb-3 rounded"
+                      />
+                      <h3 className="text-md font-semibold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-green-500 mb-2">
+                        {product.name}
+                      </h3>
+                      <p className="text-gray-500 text-sm">{product.offer}</p>
+                    </div>
+                  </Link>
                 ))}
               </div>
             </div>

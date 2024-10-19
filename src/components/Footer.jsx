@@ -1,6 +1,6 @@
 import React from "react";
 import { FiFacebook, FiTwitter, FiInstagram, FiLinkedin } from "react-icons/fi";
-import { Link } from "react-router-dom"; // Import Link from react-router-dom
+import { Link } from "react-router-dom"; 
 
 export default function Footer() {
   return (
@@ -16,7 +16,7 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link to="/products" className="text-gray-700 hover:text-blue-600">
+                <Link to="/categoryList" className="text-gray-700 hover:text-blue-600">
                   Products
                 </Link>
               </li>

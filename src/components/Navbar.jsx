@@ -14,7 +14,7 @@ import Swal from "sweetalert2";
 const Navbar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const dropdownRef = useRef(null); 
+  const dropdownRef = useRef(null);
   const navigate = useNavigate();
 
   const user = JSON.parse(localStorage.getItem("user"));
@@ -64,7 +64,7 @@ const Navbar = () => {
                   Home
                 </Link>
                 <Link
-                  to="/category"
+                  to="/categoryList"
                   className="relative text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-md font-medium after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-blue-500 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 after:origin-left"
                 >
                   Categories
@@ -95,7 +95,7 @@ const Navbar = () => {
                         <Link
                           to="/profile"
                           className="block px-4 py-2 text-md text-black hover:bg-gray-100"
-                          onClick={() => setIsDropdownOpen(false)} 
+                          onClick={() => setIsDropdownOpen(false)}
                         >
                           Profile
                         </Link>
@@ -154,7 +154,12 @@ const Navbar = () => {
             </button>
           </div>
 
-          <div className="mt-8 space-y-4 text-black">
+          {user && (
+            <span className="text-lg font-semibold text-black mt-4 flex flex-col items-start ml-4 gap-4">
+              Username: {user.name || "User"}
+            </span>
+          )}
+          <div className="mt-4 space-y-4 text-black">
             <Link
               to="/"
               className="flex items-center space-x-2 px-4 py-2 text-lg font-medium hover:bg-gray-100"
@@ -164,7 +169,7 @@ const Navbar = () => {
               <span>Home</span>
             </Link>
             <Link
-              to="/category"
+              to="/categoryList"
               className="flex items-center space-x-2 px-4 py-2 text-lg font-medium hover:bg-gray-100"
               onClick={() => setIsSidebarOpen(false)}
             >
@@ -191,12 +196,17 @@ const Navbar = () => {
             <div className="mt-4 flex flex-col items-start ml-4 gap-4">
               {user ? (
                 <>
-                  <span className="text-lg font-semibold text-black mb-2">
-                    Username: {user.name || "User"}
-                  </span>
                   <button
                     onClick={() => {
-                      handleLogout(); 
+                      setIsSidebarOpen(false);
+                    }}
+                    className="bg-gradient-to-r from-purple-600 to-blue-500 text-white py-2 px-4 rounded-md font-medium hover:bg-blue-600 transition duration-300 transform hover:scale-105"
+                  >
+                    <Link to="/profile">Profile</Link>
+                  </button>
+                  <button
+                    onClick={() => {
+                      handleLogout();
                       setIsSidebarOpen(false);
                     }}
                     className="bg-gradient-to-r from-purple-600 to-blue-500 text-white py-2 px-4 rounded-md font-medium hover:bg-blue-600 transition duration-300 transform hover:scale-105"
