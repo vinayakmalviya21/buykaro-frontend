@@ -11,21 +11,21 @@ export default function OffersSection() {
       description:
         "Get the best deals on all electronic items, including phones, laptops, and accessories.",
       img: laptopImage, 
-      link: "/shop/electronics",
+      link: "/categories-Product/6713f4d4b4df71ef3b0db337",
     },
     {
       title: "Buy 1 Get 1 Free on Shoes",
       description:
         "Exclusive offers on our latest collection of shoes. Limited time only!",
       img: shoesImage,
-      link: "/shop/shoes",
+      link: "/categories-Product/6713f4d4b4df71ef3b0db338",
     },
     {
       title: "Up to 70% Off on Fashion",
       description:
         "Shop the latest trends with discounts up to 70%. Don't miss out!",
       img: fashionImage,
-      link: "/shop/fashion",
+      link: "/categories-Product/6713f4d4b4df71ef3b0db338",
     },
   ];
 

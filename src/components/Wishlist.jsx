@@ -20,7 +20,7 @@ const Wishlist = () => {
           },
         }
       );
-      if (!response.ok) throw new Error("Failed to fetch wishlist");
+      if (!response.ok) throw new Error("Failed to fetch wishlist.Please login again to show wishlist.");
       const data = await response.json();
 
       if (data.cartItems) {

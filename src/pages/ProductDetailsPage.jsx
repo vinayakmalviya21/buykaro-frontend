@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { FaTimes, FaChevronLeft, FaChevronRight, FaStar } from "react-icons/fa";
-import Swal from "sweetalert2"; // Import SweetAlert2
+import { AiOutlinePlus, AiOutlineMinus } from "react-icons/ai";
+import { FaRegHeart, FaShoppingCart } from "react-icons/fa";
+import { BsFillCartFill } from "react-icons/bs";
+import Swal from "sweetalert2";
 
 const ProductDetailsPage = () => {
   const { productId } = useParams();
@@ -12,6 +15,7 @@ const ProductDetailsPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [pincode, setPincode] = useState("");
   const [deliveryTime, setDeliveryTime] = useState("");
+  const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
     const fetchProductDetails = async () => {
@@ -83,7 +87,6 @@ const ProductDetailsPage = () => {
   };
 
   // Handle button clicks
-  // Handle button clicks
   const handleAction = async (action) => {
     if (!isLoggedIn()) {
       Swal.fire({
@@ -115,7 +118,7 @@ const ProductDetailsPage = () => {
                 title: "Product already in wishlist",
                 text: "This product is already in your wishlist.",
               });
-              return; 
+              return;
             }
 
             if (!response.ok) {
@@ -138,19 +141,25 @@ const ProductDetailsPage = () => {
           break;
 
         case "add to cart":
-          // Call API to add to cart
-          console.log("API call to add to cart");
+          // Implement the logic for the "buy now" action
           break;
 
         case "buy now":
-          // Call API to proceed to buy
-          console.log("API call to buy now");
+          // Implement the logic for the "buy now" action
           break;
 
         default:
           break;
       }
     }
+  };
+
+  const incrementQuantity = () => {
+    setQuantity((prev) => prev + 1);
+  };
+
+  const decrementQuantity = () => {
+    setQuantity((prev) => (prev > 1 ? prev - 1 : prev));
   };
 
   if (loading) return <div className="text-center">Loading...</div>;
@@ -243,25 +252,51 @@ const ProductDetailsPage = () => {
               </div>
             </div>
 
-            <div className="flex flex-col space-y-4 lg:space-y-0 lg:flex-row lg:items-center lg:justify-end lg:space-x-4">
-              <button
-                className="bg-orange-500 text-white px-6 py-2 rounded-md hover:bg-orange-600 transition"
-                onClick={() => handleAction("add to wishlist")}
-              >
-                Add to Wishlist
-              </button>
-              <button
-                className="bg-orange-500 text-white px-6 py-2 rounded-md hover:bg-orange-600 transition"
-                onClick={() => handleAction("add to cart")}
-              >
-                Add to Cart
-              </button>
-              <button
-                className="bg-yellow-500 text-white px-6 py-2 rounded-md hover:bg-yellow-600 transition"
-                onClick={() => handleAction("buy now")}
-              >
-                Buy Now
-              </button>
+            <div className="flex flex-col lg:flex-row items-center justify-between mb-6 space-y-4 lg:space-y-0 lg:space-x-4">
+              <div className="flex items-center">
+                <p className="font-semibold text-lg mr-4">Quantity:</p>
+                <div className="flex items-center border rounded-md shadow-sm">
+                  <button
+                    onClick={decrementQuantity}
+                    className="bg-gray-200 text-xl px-4 py-2 rounded-l-md hover:bg-gray-300 transition"
+                  >
+                    <AiOutlineMinus />
+                  </button>
+                  <span className="border-x px-4 py-2 font-semibold text-lg">
+                    {quantity}
+                  </span>
+                  <button
+                    onClick={incrementQuantity}
+                    className="bg-gray-200 text-xl px-4 py-2 rounded-r-md hover:bg-gray-300 transition"
+                  >
+                    <AiOutlinePlus />
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex flex-col space-y-4 lg:flex-row lg:space-y-0 lg:space-x-4">
+                <button
+                  className="bg-orange-500 text-white px-6 py-3 rounded-md hover:bg-orange-600 transition flex items-center space-x-2"
+                  onClick={() => handleAction("add to wishlist")}
+                >
+                  <FaRegHeart className="w-5 h-5" />
+                  <span>Add to Wishlist</span>
+                </button>
+                <button
+                  className="bg-orange-500 text-white px-6 py-3 rounded-md hover:bg-orange-600 transition flex items-center space-x-2"
+                  onClick={() => handleAction("add to cart")}
+                >
+                  <FaShoppingCart className="w-5 h-5" />
+                  <span>Add to Cart</span>
+                </button>
+                <button
+                  className="bg-yellow-500 text-white px-6 py-3 rounded-md hover:bg-yellow-600 transition flex items-center space-x-2"
+                  onClick={() => handleAction("buy now")}
+                >
+                  <BsFillCartFill className="w-5 h-5" />
+                  <span>Buy Now</span>
+                </button>
+              </div>
             </div>
 
             <form onSubmit={handlePincodeSubmit} className="mt-6">
