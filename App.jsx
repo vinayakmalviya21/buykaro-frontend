@@ -4,7 +4,7 @@ import Navbar from "./src/components/Navbar";
 import Footer from "./src/components/Footer";
 import LandingPage from "./src/pages/LandingPage";
 import ContactUsPage from "./src/pages/ContactUsPage";
-import ProductPage from "./src/pages/ProductPage";
+import CategoryProductPage from "./src/pages/CategoryProductPage";
 import ProductDetailsPage from "./src/pages/ProductDetailsPage";
 import CategoryPage from "./src/pages/CategoryPage";
 import ProfilePage from "./src/pages/ProfilePage";
@@ -42,8 +42,8 @@ function App() {
         )}
 
         <Route path="/categoryList" element={<CategoryPage />} />
-        <Route path="/categories-Product/:category_id" element={<ProductPage />} />
-        <Route path="/product-details" element={<ProductDetailsPage />} />
+        <Route path="/categories-Product/:category_id" element={<CategoryProductPage />} />
+        <Route path="/product/:productId" element={<ProductDetailsPage />} />
       </Routes>
       <Footer />
     </Router>

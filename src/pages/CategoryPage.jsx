@@ -52,7 +52,7 @@ const CategoryPage = () => {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <p className="text-2xl font-semibold">Loading products...</p>
+          <p className="text-2xl font-semibold">Loading categoties...</p>
           <div className="loader mt-4"></div>
         </div>
       </div>
@@ -114,10 +114,19 @@ const CategoryPage = () => {
                       className="cursor-pointer flex-shrink-0 w-48 border p-3 rounded-lg shadow-sm hover:shadow-lg transition duration-300"
                     >
                       <img
-                        src={product.image || fashionImage}
-                        alt={product.name}
+                        src={
+                          product?.images?.length > 0
+                            ? product.images[0]
+                            : fashionImage
+                        }
+                        alt={
+                          product?.images?.length > 0
+                            ? product.name
+                            : "default"
+                        }
                         className="w-full h-36 object-cover mb-3 rounded"
                       />
+
                       <h3 className="text-md font-semibold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-green-500 mb-2">
                         {product.name}
                       </h3>

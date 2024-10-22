@@ -1,150 +1,249 @@
-import React, { useState } from "react";
-import fashionImage from "../assets/images/fashion-image.jpg";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { FaTimes, FaChevronLeft, FaChevronRight, FaStar } from "react-icons/fa";
 
 const ProductDetailsPage = () => {
+  const { productId } = useParams();
+  const [productDetails, setProductDetails] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [pincode, setPincode] = useState("");
-  const [deliveryMessage, setDeliveryMessage] = useState("");
+  const [deliveryTime, setDeliveryTime] = useState("");
 
-  // Simulate delivery check based on pincode
-  const checkDelivery = () => {
-    if (pincode === "123456") {
-      setDeliveryMessage(
-        "Delivery available. Expected delivery: 3-5 business days."
-      );
+  useEffect(() => {
+    const fetchProductDetails = async () => {
+      try {
+        const response = await fetch(
+          `${
+            import.meta.env.VITE_API_URL
+          }/api/product/getProductDetails?id=${productId}`
+        );
+        if (!response.ok) throw new Error("Failed to fetch product details");
+        const data = await response.json();
+        setProductDetails(data[0]);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProductDetails();
+  }, [productId]);
+
+  const openModal = (index) => {
+    setCurrentImageIndex(index);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const nextImage = () => {
+    setCurrentImageIndex((prevIndex) =>
+      prevIndex === productDetails.images.length - 1 ? 0 : prevIndex + 1
+    );
+  };
+
+  const prevImage = () => {
+    setCurrentImageIndex((prevIndex) =>
+      prevIndex === 0 ? productDetails.images.length - 1 : prevIndex - 1
+    );
+  };
+
+  const handlePincodeSubmit = (e) => {
+    e.preventDefault();
+
+    if (/^\d{6}$/.test(pincode)) {
+      setDeliveryTime("Delivery available in 3-4 days");
+    } else if (pincode.length > 8 || pincode.length < 6) {
+      setDeliveryTime("Invalid pincode");
     } else {
-      setDeliveryMessage("Sorry, delivery is not available for this pincode.");
+      setDeliveryTime("Delivery time may vary for this pincode");
     }
   };
 
+  const renderStars = (rating) => {
+    const totalStars = 5;
+    return [...Array(totalStars)].map((_, index) => (
+      <FaStar
+        key={index}
+        className={index < rating ? "text-yellow-400" : "text-gray-300"}
+      />
+    ));
+  };
+
+  if (loading) return <div className="text-center">Loading...</div>;
+  if (error) return <div className="text-red-500 text-center">{error}</div>;
+
   return (
     <div className="container mx-auto px-4 py-8 lg:px-24">
-      {" "}
-      {/* Adjust the container padding */}
-      {/* Product image and title */}
-      <div className="flex flex-col lg:flex-row items-start">
-        {" "}
-        {/* Align items to start */}
-        {/* Product Image */}
-        <div className="w-full lg:w-1/3 mb-6 lg:mb-0">
-          {" "}
-          {/* Smaller image column */}
-          <img
-            className="w-full h-auto rounded-lg object-contain" /* Use object-contain to control image size */
-            src={fashionImage}
-            alt="Dell Monitor"
-          />
-        </div>
-        {/* Product Info */}
-        <div className="w-full lg:w-2/3 lg:pl-12">
-          {" "}
-          {/* Larger info column */}
-          <h1 className="text-3xl font-bold mb-2">
-            DELL S Series 27" Full HD IPS Monitor
-          </h1>
-          <p className="text-lg mb-4 text-gray-600">
-            DELL S Series 68.58 cm (27 inch) Full HD IPS Panel with 5-Years
-            warranty, 99% sRGB, Low Blue Light technology, HDMI x2, Tilt
-            adjustment, 3-sided Bezel-less Monitor (S2721HN / S2721HNM)
-          </p>
-          {/* Pricing */}
-          <div className="flex items-center mb-4">
-            <span className="text-2xl font-bold text-green-500">₹12,499</span>
-            <span className="ml-4 text-gray-500 line-through">₹23,316</span>
-            <span className="ml-2 text-green-500">(46% off)</span>
+      <div className={`${isModalOpen ? "blur-sm" : ""}`}>
+        <div className="flex flex-col lg:flex-row items-start space-y-6 lg:space-y-0 lg:space-x-12">
+          <div className="w-full lg:w-1/3">
+            <img
+              className="w-full h-auto rounded-lg object-contain cursor-pointer"
+              src={productDetails.images[0]}
+              alt={productDetails.name}
+              onClick={() => openModal(0)}
+            />
+            <div className="flex justify-center mt-4 space-x-2">
+              {productDetails.images.map((_, index) => (
+                <span
+                  key={index}
+                  className={`w-3 h-3 rounded-full cursor-pointer transition ${
+                    currentImageIndex === index ? "bg-blue-500" : "bg-gray-300"
+                  }`}
+                  onClick={() => openModal(index)}
+                />
+              ))}
+            </div>
           </div>
-          {/* Special offers */}
-          <div className="mb-6">
-            <p className="text-lg font-bold mb-2">Available Offers:</p>
-            <ul className="list-disc list-inside text-gray-700">
-              <li>5% Unlimited Cashback on Flipkart Axis Bank Credit Card</li>
-              <li>Get extra 32% off (price inclusive of cashback/coupon)</li>
-              <li>Buy Keyboard combo with Monitor and Get 5% Off</li>
-            </ul>
-          </div>
-          {/* Warranty info */}
-          <div className="mb-6">
-            <p className="text-lg font-bold mb-2">Warranty:</p>
-            <p className="text-gray-700">5 Years Warranty</p>
-          </div>
-          {/* Delivery Section */}
-          <div className="mb-6">
-            <p className="text-lg font-bold mb-2">Check Delivery Options:</p>
-            <div className="flex items-center space-x-4">
-              <input
-                type="text"
-                placeholder="Enter Pincode"
-                className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-500"
-                value={pincode}
-                onChange={(e) => setPincode(e.target.value)}
-              />
-              <button
-                className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition"
-                onClick={checkDelivery}
+
+          <div className="w-full lg:w-2/3 flex flex-col justify-between space-y-4">
+            <div>
+              <h1 className="text-3xl font-bold mb-2">{productDetails.name}</h1>
+              <p className="text-lg mb-4 text-gray-600">
+                {productDetails.description}
+              </p>
+
+              <div className="flex items-center mb-4 space-x-2">
+                <div className="flex">{renderStars(productDetails.rating)}</div>
+                <span className="text-gray-500 text-sm">
+                  ({productDetails.numReviews} reviews)
+                </span>
+              </div>
+
+              <div className="text-2xl font-bold text-green-500 mb-4">
+                ₹{productDetails.price}
+              </div>
+
+              <div
+                className={`text-sm font-medium mb-4 ${
+                  productDetails.countInStock > 0
+                    ? "text-green-600"
+                    : "text-red-600"
+                }`}
               >
-                Check
+                {productDetails.countInStock > 0
+                  ? `${productDetails.countInStock} in stock`
+                  : "Out of stock"}
+              </div>
+
+              <div className="mt-4">
+                <h2 className="text-xl font-bold mb-2">Reviews:</h2>
+                {productDetails.reviews.length > 0 ? (
+                  productDetails.reviews.map((review) => (
+                    <div
+                      key={review._id}
+                      className="border-b border-gray-200 py-2"
+                    >
+                      <p className="text-gray-800">{review.comment}</p>
+                      <div className="flex items-center mb-2 space-x-2">
+                        <span className="font-semibold">
+                          {review.user.name}
+                        </span>{" "}
+                        <span className="text-gray-500 text-sm">
+                          {new Date(review.createdAt).toLocaleDateString()}{" "}
+                        </span>
+                      </div>
+                      <div className="flex items-center mb-4 space-x-2">
+                        <div className="flex">
+                          {renderStars(review.rating)}{" "}
+                        </div>
+                        <span className="text-gray-500 text-sm">
+                          ({productDetails.numReviews} reviews)
+                        </span>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-gray-500">No reviews yet</p>
+                )}
+              </div>
+            </div>
+
+            <div className="flex flex-col space-y-4 lg:space-y-0 lg:flex-row lg:items-center lg:justify-end lg:space-x-4">
+              <button className="bg-orange-500 text-white px-6 py-2 rounded-md hover:bg-orange-600 transition">
+                Add to Cart
+              </button>
+              <button className="bg-yellow-500 text-white px-6 py-2 rounded-md hover:bg-yellow-600 transition">
+                Buy Now
               </button>
             </div>
-            {deliveryMessage && (
-              <p className="mt-4 text-gray-700">{deliveryMessage}</p>
-            )}
-          </div>
-          {/* Buttons */}
-          <div className="flex space-x-4 mb-6">
-            <button className="bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600 transition">
-              Add to Cart
-            </button>
-            <button className="bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600 transition">
-              Buy Now
-            </button>
-          </div>
-          {/* Additional Options */}
-          <div className="mb-6">
-            <p className="text-lg font-bold mb-2">Available Payment Options:</p>
-            <ul className="list-disc list-inside text-gray-700">
-              <li>Credit/Debit Card</li>
-              <li>Net Banking</li>
-              <li>UPI</li>
-              <li>Cash on Delivery</li>
-            </ul>
-          </div>
-          {/* Return Policy */}
-          <div className="mb-6">
-            <p className="text-lg font-bold mb-2">Return Policy:</p>
-            <p className="text-gray-700">
-              This product is eligible for return within 10 days of delivery, in
-              case of any manufacturing defect or damage.
-            </p>
+
+            <form onSubmit={handlePincodeSubmit} className="mt-6">
+              <label className="block text-gray-700 font-bold mb-2">
+                Enter Pincode:
+              </label>
+              <div className="flex items-center space-x-2">
+                <input
+                  type="text"
+                  value={pincode}
+                  onChange={(e) => setPincode(e.target.value)}
+                  className={`border rounded px-4 py-2 focus:outline-none transition-all focus:ring-2 ${
+                    deliveryTime === "Invalid pincode"
+                      ? "border-red-500 focus:ring-red-500"
+                      : "focus:ring-blue-500"
+                  }`}
+                  placeholder="Enter pincode"
+                />
+                <button
+                  type="submit"
+                  className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition"
+                >
+                  Check
+                </button>
+              </div>
+
+              {deliveryTime && (
+                <p
+                  className={`mt-2 ${
+                    deliveryTime === "Invalid pincode"
+                      ? "text-red-500"
+                      : "text-gray-700"
+                  }`}
+                >
+                  {deliveryTime}
+                </p>
+              )}
+            </form>
           </div>
         </div>
       </div>
-      {/* Additional details */}
-      <div className="mt-12 lg:pl-12">
-        {" "}
-        {/* Add padding on large screens */}
-        <h2 className="text-2xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-green-500 ">Product Details</h2>
-        <p className="text-gray-700 mb-2">
-          <strong>Screen Size:</strong> 27 inches
-        </p>
-        <p className="text-gray-700 mb-2">
-          <strong>Resolution:</strong> Full HD (1920 x 1080)
-        </p>
-        <p className="text-gray-700 mb-2">
-          <strong>Refresh Rate:</strong> 75 Hz
-        </p>
-        <p className="text-gray-700 mb-2">
-          <strong>Response Time:</strong> 4 ms
-        </p>
-        <p className="text-gray-700 mb-2">
-          <strong>Panel Type:</strong> IPS
-        </p>
-        <p className="text-gray-700 mb-2">
-          <strong>Connectivity:</strong> 2 x HDMI
-        </p>
-        <p className="text-gray-700 mb-2">
-          <strong>Special Features:</strong> AMD Free Sync, Low Blue Light
-          technology, Tilt Adjustment, 3-sided Bezel-less design
-        </p>
-      </div>
+
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-75 z-50">
+          <div className="relative w-full h-full flex items-center justify-center">
+            <img
+              className="max-w-full max-h-full object-contain"
+              src={productDetails.images[currentImageIndex]}
+              alt="Product"
+            />
+            <button
+              className="absolute top-2 right-2 text-white"
+              onClick={closeModal}
+            >
+              <FaTimes size={24} />
+            </button>
+            <button
+              className="absolute left-2 top-1/2 transform -translate-y-1/2 text-white"
+              onClick={prevImage}
+            >
+              <FaChevronLeft size={32} />
+            </button>
+            <button
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 text-white"
+              onClick={nextImage}
+            >
+              <FaChevronRight size={32} />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
