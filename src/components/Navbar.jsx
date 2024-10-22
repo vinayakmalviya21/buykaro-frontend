@@ -31,6 +31,23 @@ const Navbar = () => {
     });
   };
 
+  const handleCartClick = () => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      Swal.fire({
+        title: 'Please log in',
+        text: 'You need to log in to access your cart.',
+        icon: 'warning',
+        confirmButtonText: 'OK',
+      }).then(() => {
+        navigate("/login");
+      });
+    } else {
+      navigate("/my-cart");
+    }
+  };
+  
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -75,12 +92,12 @@ const Navbar = () => {
                 >
                   Contact Us
                 </Link>
-                <Link
-                  to="/my-cart"
+                <button
+                  onClick={handleCartClick}
                   className="relative text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-md font-medium after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-blue-500 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 after:origin-left"
                 >
                   Cart <FiShoppingCart className="inline h-5 w-5" />
-                </Link>
+                </button>
                 {user ? (
                   <div
                     className="relative inline-block text-left"
@@ -184,14 +201,13 @@ const Navbar = () => {
               <FiPhone className="h-5 w-5 text-red-600" />
               <span>Contact Us</span>
             </Link>
-            <Link
-              to="/my-cart"
+            <button
               className="flex items-center space-x-2 px-4 py-2 text-lg font-medium hover:bg-gray-100"
-              onClick={() => setIsSidebarOpen(false)}
+              onClick={() => {handleCartClick();setIsSidebarOpen(false)}}
             >
               <FiShoppingCart className="h-5 w-5 text-orange-600" />
               <span>Cart</span>
-            </Link>
+            </button>
 
             <div className="mt-4 flex flex-col items-start ml-4 gap-4">
               {user ? (

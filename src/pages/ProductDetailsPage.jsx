@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { FaTimes, FaChevronLeft, FaChevronRight, FaStar } from "react-icons/fa";
+import Swal from "sweetalert2"; // Import SweetAlert2
 
 const ProductDetailsPage = () => {
   const { productId } = useParams();
@@ -74,6 +75,82 @@ const ProductDetailsPage = () => {
         className={index < rating ? "text-yellow-400" : "text-gray-300"}
       />
     ));
+  };
+
+  // Check if user is logged in
+  const isLoggedIn = () => {
+    return !!localStorage.getItem("token");
+  };
+
+  // Handle button clicks
+  // Handle button clicks
+  const handleAction = async (action) => {
+    if (!isLoggedIn()) {
+      Swal.fire({
+        icon: "warning",
+        title: "Please login",
+        text: `You need to login to ${action}`,
+        confirmButtonText: "Login",
+      });
+    } else {
+      switch (action) {
+        case "add to wishlist":
+          try {
+            const token = localStorage.getItem("token");
+            const response = await fetch(
+              `${import.meta.env.VITE_API_URL}/api/wishlist/add`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ productId }),
+              }
+            );
+
+            if (response.status === 400) {
+              Swal.fire({
+                icon: "info",
+                title: "Product already in wishlist",
+                text: "This product is already in your wishlist.",
+              });
+              return; 
+            }
+
+            if (!response.ok) {
+              throw new Error("Failed to add product to wishlist");
+            }
+
+            const data = await response.json();
+            Swal.fire({
+              icon: "success",
+              title: "Added to Wishlist",
+              text: "Product has been added to your wishlist!",
+            });
+          } catch (error) {
+            Swal.fire({
+              icon: "error",
+              title: "Error",
+              text: error.message,
+            });
+          }
+          break;
+
+        case "add to cart":
+          // Call API to add to cart
+          console.log("API call to add to cart");
+          break;
+
+        case "buy now":
+          // Call API to proceed to buy
+          console.log("API call to buy now");
+          break;
+
+        default:
+          break;
+      }
+    }
   };
 
   if (loading) return <div className="text-center">Loading...</div>;
@@ -167,10 +244,22 @@ const ProductDetailsPage = () => {
             </div>
 
             <div className="flex flex-col space-y-4 lg:space-y-0 lg:flex-row lg:items-center lg:justify-end lg:space-x-4">
-              <button className="bg-orange-500 text-white px-6 py-2 rounded-md hover:bg-orange-600 transition">
+              <button
+                className="bg-orange-500 text-white px-6 py-2 rounded-md hover:bg-orange-600 transition"
+                onClick={() => handleAction("add to wishlist")}
+              >
+                Add to Wishlist
+              </button>
+              <button
+                className="bg-orange-500 text-white px-6 py-2 rounded-md hover:bg-orange-600 transition"
+                onClick={() => handleAction("add to cart")}
+              >
                 Add to Cart
               </button>
-              <button className="bg-yellow-500 text-white px-6 py-2 rounded-md hover:bg-yellow-600 transition">
+              <button
+                className="bg-yellow-500 text-white px-6 py-2 rounded-md hover:bg-yellow-600 transition"
+                onClick={() => handleAction("buy now")}
+              >
                 Buy Now
               </button>
             </div>
