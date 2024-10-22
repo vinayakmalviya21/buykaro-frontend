@@ -89,18 +89,20 @@ const CategoryProductPage = () => {
                 to={`/product/${product._id}`}
                 className="w-full sm:w-full md:w-1/2 lg:w-1/3 px-4 mb-6"
               >
-                <div className="border rounded-lg p-4 shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <div className="border rounded-lg p-4 shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col h-full">
                   <img
                     src={product.images[0]}
                     alt={product.name}
                     className="w-full h-32 sm:h-40 md:h-40 lg:h-48 object-cover rounded mb-4 transition-transform transform hover:scale-105 duration-300"
                   />
-                  <h2 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-green-500 mb-2">
+                  <h2 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-green-500 mb-2 flex-grow">
                     {product.name}
                   </h2>
                   <p className="text-gray-600">{product.brand}</p>
                   <p className="text-gray-600">Rs.{product.price}</p>
-                  <p className="text-gray-500">{product.description}</p>
+                  <p className="text-gray-500 flex-grow">
+                    {product.description}
+                  </p>
                   <button className="mt-2 bg-blue-500 text-white py-1 px-3 rounded transition-colors duration-300 hover:bg-blue-600">
                     Add to Cart
                   </button>

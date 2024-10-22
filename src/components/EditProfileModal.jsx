@@ -4,11 +4,11 @@ import Swal from "sweetalert2";
 
 const EditProfileModal = ({ toggleEditProfile, user, updateUserDetails }) => {
     const [formData, setFormData] = useState({
-        phone: user.phone || "",
-        address: user.shippingAddress.address || "",
-        city: user.shippingAddress.city || "",
-        postalCode: user.shippingAddress.postalCode || "",
-        country: user.shippingAddress.country || "",
+        phone: user?.phone || "",
+        address: user?.shippingAddress?.address || "",
+        city: user?.shippingAddress?.city || "",
+        postalCode: user?.shippingAddress?.postalCode || "",
+        country: user?.shippingAddress?.country || "",
     });
 
     const handleInputChange = (e) => {
@@ -21,7 +21,8 @@ const EditProfileModal = ({ toggleEditProfile, user, updateUserDetails }) => {
     };
 
     const handleSave = async () => {
-        const userId = user.id;
+        const userId = user._id;
+        console.log("userId",userId)
         try {
             const response = await axios.put(
                 `${import.meta.env.VITE_API_URL}/api/users/edit-profile`,

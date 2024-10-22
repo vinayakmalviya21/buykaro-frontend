@@ -81,7 +81,7 @@ const CategoryPage = () => {
           }
 
           return (
-            <div key={category.name} className="mb-10 relative">
+            <div key={category.name} className="mb-5 relative">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-2xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500">
                   {category.name}
@@ -107,11 +107,14 @@ const CategoryPage = () => {
                 ref={scrollRefs.current[index]}
                 className="flex overflow-x-auto space-x-4 hide-scrollbar"
               >
-                {category.productList.map((product, index) => (
-                  <Link key={index} to={`/categories-Product/${category._id}`}>
+                {category.productList.map((product) => (
+                  <Link
+                    key={product._id}
+                    to={`/categories-Product/${category._id}`}
+                  >
                     <div
-                      key={product._id}
-                      className="cursor-pointer flex-shrink-0 w-48 border p-3 rounded-lg shadow-sm hover:shadow-lg transition duration-300"
+                      className="cursor-pointer flex-shrink-0 w-48 border p-3 rounded-lg shadow-sm hover:shadow-lg transition duration-300 flex flex-col"
+                      style={{ height: "250px" }}
                     >
                       <img
                         src={
@@ -120,14 +123,11 @@ const CategoryPage = () => {
                             : fashionImage
                         }
                         alt={
-                          product?.images?.length > 0
-                            ? product.name
-                            : "default"
+                          product?.images?.length > 0 ? product.name : "default"
                         }
                         className="w-full h-36 object-cover mb-3 rounded"
                       />
-
-                      <h3 className="text-md font-semibold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-green-500 mb-2">
+                      <h3 className="text-md font-semibold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-green-500 mb-2 flex-grow">
                         {product.name}
                       </h3>
                       <p className="text-gray-500 text-sm">{product.offer}</p>

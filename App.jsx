@@ -12,21 +12,14 @@ import MyCartPage from "./src/pages/MyCartPage";
 import BuyNow from "./src/pages/BuyNow";
 import Signup from "./src/pages/SignUp";
 import Login from "./src/pages/Login";
+import { userHook } from "./src/context/UserContext";
 
 function App() {
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    const storedUserData = localStorage.getItem("user");
-
-    if (storedUserData) {
-      setUser(JSON.parse(storedUserData));
-    }
-  }, []);
+  const {user,setUser} = userHook();
 
   return (
     <Router>
-      <Navbar user={user} setUser={setUser} />
+      <Navbar />
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/contact" element={<ContactUsPage />} />

@@ -1,15 +1,16 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "axios";
-import { FiEye, FiEyeOff } from "react-icons/fi"; 
+import { FiEye, FiEyeOff } from "react-icons/fi";
+import { userHook } from "../context/UserContext";
 
 const Login = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-
+  const { user, setUser } = userHook();
   const togglePasswordVisibility = () => {
     setIsPasswordVisible((prev) => !prev);
   };
@@ -25,6 +26,8 @@ const Login = () => {
       if (response.status === 200) {
         const { token, user } = response.data;
 
+        setUser(user);
+
         localStorage.setItem("token", token);
         localStorage.setItem("user", JSON.stringify(user));
 
@@ -33,7 +36,7 @@ const Login = () => {
           title: "Login Successful!",
           text: "Welcome back!",
         }).then(() => {
-          navigate("/"); 
+          navigate("/");
         });
       } else {
         Swal.fire({
@@ -72,14 +75,17 @@ const Login = () => {
         </h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="email">
+            <label
+              className="block text-gray-700 text-sm font-semibold mb-2"
+              htmlFor="email"
+            >
               Email
             </label>
             <input
               type="email"
               id="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)} 
+              onChange={(e) => setEmail(e.target.value)}
               className="border border-gray-300 rounded-lg py-2 px-4 w-full focus:outline-none focus:border-blue-500"
               placeholder="you@example.com"
               required
@@ -87,14 +93,17 @@ const Login = () => {
           </div>
 
           <div className="mb-4 relative">
-            <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="password">
+            <label
+              className="block text-gray-700 text-sm font-semibold mb-2"
+              htmlFor="password"
+            >
               Password
             </label>
             <input
               type={isPasswordVisible ? "text" : "password"}
               id="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)} 
+              onChange={(e) => setPassword(e.target.value)}
               className="border border-gray-300 rounded-lg py-2 px-4 pr-10 w-full focus:outline-none focus:border-blue-500"
               placeholder="********"
               required
