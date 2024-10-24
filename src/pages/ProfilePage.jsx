@@ -20,7 +20,6 @@ export default function ProfilePage(props) {
 
   const getUser = async () => {
     const {id} = JSON.parse(localStorage.getItem("user"));
-    console.log(id)
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/users/get-user`,
@@ -31,7 +30,6 @@ export default function ProfilePage(props) {
         const { user } = response.data;
   
         setUser(user);
-        console.log(user);
         localStorage.setItem("user", JSON.stringify(user));
       }
     } catch (error) {
@@ -43,7 +41,6 @@ export default function ProfilePage(props) {
     getUser();
 
     const storedUser = localStorage.getItem("user");
-    console.log(storedUser)
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }

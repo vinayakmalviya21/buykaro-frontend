@@ -26,7 +26,8 @@ const BuyNow = () => {
     },
   ];
 
-  const [quantities, setQuantities] = useState(products.map(() => 1)); // Initialize quantity for each product
+  const [loading, setLoading] = useState(true);
+  const [quantities, setQuantities] = useState(products.map(() => 1)); 
   const [address, setAddress] = useState("");
   const [offer, setOffer] = useState("");
   const [discount, setDiscount] = useState(0);
@@ -39,14 +40,14 @@ const BuyNow = () => {
 
   const handleQuantityChange = (index, value) => {
     const newQuantities = [...quantities];
-    newQuantities[index] = Math.max(0, value); // Ensure quantity is at least 0
+    newQuantities[index] = Math.max(0, value); 
     setQuantities(newQuantities);
   };
 
   const handleOfferChange = (e) => {
     setOffer(e.target.value);
     if (e.target.value === "DISCOUNT10") {
-      setDiscount(500); // Example discount in INR
+      setDiscount(500); 
     } else {
       setDiscount(0);
     }
@@ -64,6 +65,17 @@ const BuyNow = () => {
     );
   };
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <p className="text-2xl font-semibold">Loading categoties...</p>
+          <div className="loader mt-4"></div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex justify-center">
       <div className="container p-6 max-w-6xl flex flex-col md:flex-row gap-8">
@@ -79,7 +91,7 @@ const BuyNow = () => {
                 className="p-4 border-2 rounded-lg shadow-md flex flex-col md:flex-row items-center"
               >
                 <img
-                  src={product.image}
+                  src={product.images[0]}
                   alt={product.name}
                   className="w-full md:w-1/4 h-40 object-cover rounded-lg mb-4 md:mb-0"
                 />

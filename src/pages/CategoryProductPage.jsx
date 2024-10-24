@@ -17,7 +17,6 @@ const CategoryProductPage = () => {
       );
       if (!response.ok) throw new Error("Failed to fetch categories");
       const data = await response.json();
-      console.log(data);
       setProducts(data);
     } catch (error) {
       setError(error.message);

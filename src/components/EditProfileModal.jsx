@@ -22,7 +22,6 @@ const EditProfileModal = ({ toggleEditProfile, user, updateUserDetails }) => {
 
     const handleSave = async () => {
         const userId = user._id;
-        console.log("userId",userId)
         try {
             const response = await axios.put(
                 `${import.meta.env.VITE_API_URL}/api/users/edit-profile`,

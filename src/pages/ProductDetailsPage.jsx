@@ -141,7 +141,46 @@ const ProductDetailsPage = () => {
           break;
 
         case "add to cart":
-          // Implement the logic for the "buy now" action
+          try {
+            const token = localStorage.getItem("token");
+            const response = await fetch(
+              `${import.meta.env.VITE_API_URL}/api/cart/add`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ productId, quantity }), 
+              }
+            );
+
+            if (response.status === 400) {
+              Swal.fire({
+                icon: "info",
+                title: "Product already in cart",
+                text: "This product is already in your cart.",
+              });
+              return;
+            }
+
+            if (!response.ok) {
+              throw new Error("Failed to add product to cart");
+            }
+
+            const data = await response.json();
+            Swal.fire({
+              icon: "success",
+              title: "Added to Cart",
+              text: "Product has been added to your cart!",
+            });
+          } catch (error) {
+            Swal.fire({
+              icon: "error",
+              title: "Error",
+              text: error.message,
+            });
+          }
           break;
 
         case "buy now":
@@ -162,8 +201,26 @@ const ProductDetailsPage = () => {
     setQuantity((prev) => (prev > 1 ? prev - 1 : prev));
   };
 
-  if (loading) return <div className="text-center">Loading...</div>;
-  if (error) return <div className="text-red-500 text-center">{error}</div>;
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <p className="text-2xl font-semibold">Loading categoties...</p>
+          <div className="loader mt-4"></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center text-red-500">
+          <p className="text-2xl font-semibold">{error}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto px-4 py-8 lg:px-24">
