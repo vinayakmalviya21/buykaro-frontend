@@ -7,7 +7,7 @@ const Wishlist = () => {
   const [wishlistItems, setWishlistItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [quantities, setQuantities] = useState({}); // State to hold quantities
+  const [quantities, setQuantities] = useState({}); 
 
   // Function to fetch a product from the wishlist
   const fetchWishlist = async () => {
@@ -31,9 +31,9 @@ const Wishlist = () => {
         setWishlistItems(data.cartItems);
         const initialQuantities = {};
         data.cartItems.forEach((item) => {
-          initialQuantities[item.product._id] = 1; // Default quantity set to 1
+          initialQuantities[item.product._id] = 1; 
         });
-        setQuantities(initialQuantities); // Set initial quantities
+        setQuantities(initialQuantities); 
       } else {
         setWishlistItems([]);
       }
@@ -89,7 +89,7 @@ const Wishlist = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ productId, quantity }), // Sending productId and quantity
+          body: JSON.stringify({ productId, quantity }), 
         }
       );
 
@@ -113,7 +113,7 @@ const Wishlist = () => {
   const handleQuantityChange = (productId, change) => {
     setQuantities((prev) => ({
       ...prev,
-      [productId]: Math.max(1, (prev[productId] || 1) + change), // Ensure quantity does not go below 1
+      [productId]: Math.max(1, (prev[productId] || 1) + change), 
     }));
   };
 

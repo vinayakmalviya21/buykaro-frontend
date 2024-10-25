@@ -13,6 +13,7 @@ import BuyNow from "./src/pages/BuyNow";
 import Signup from "./src/pages/SignUp";
 import Login from "./src/pages/Login";
 import { userHook } from "./src/context/UserContext";
+import MyOrders from "./src/pages/MyOrders";
 
 function App() {
   const {user,setUser} = userHook();
@@ -31,6 +32,7 @@ function App() {
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/my-cart" element={<MyCartPage />} />
             <Route path="/buy-now" element={<BuyNow />} />
+            <Route path="/my-orders" element={<MyOrders/>} />
           </>
         )}
 

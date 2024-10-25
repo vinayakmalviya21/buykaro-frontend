@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 import { FaTimes, FaChevronLeft, FaChevronRight, FaStar } from "react-icons/fa";
 import { AiOutlinePlus, AiOutlineMinus } from "react-icons/ai";
 import { FaRegHeart, FaShoppingCart } from "react-icons/fa";
-import { BsFillCartFill } from "react-icons/bs";
 import Swal from "sweetalert2";
 
 const ProductDetailsPage = () => {
@@ -86,7 +85,6 @@ const ProductDetailsPage = () => {
     return !!localStorage.getItem("token");
   };
 
-  // Handle button clicks
   const handleAction = async (action) => {
     if (!isLoggedIn()) {
       Swal.fire({
@@ -182,12 +180,8 @@ const ProductDetailsPage = () => {
             });
           }
           break;
-
-        case "buy now":
-          // Implement the logic for the "buy now" action
-          break;
-
-        default:
+          
+          default:
           break;
       }
     }
@@ -205,7 +199,7 @@ const ProductDetailsPage = () => {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <p className="text-2xl font-semibold">Loading categoties...</p>
+          <p className="text-2xl font-semibold">Loading product details...</p>
           <div className="loader mt-4"></div>
         </div>
       </div>
@@ -345,13 +339,6 @@ const ProductDetailsPage = () => {
                 >
                   <FaShoppingCart className="w-5 h-5" />
                   <span>Add to Cart</span>
-                </button>
-                <button
-                  className="bg-yellow-500 text-white px-6 py-3 rounded-md hover:bg-yellow-600 transition flex items-center space-x-2"
-                  onClick={() => handleAction("buy now")}
-                >
-                  <BsFillCartFill className="w-5 h-5" />
-                  <span>Buy Now</span>
                 </button>
               </div>
             </div>

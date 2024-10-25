@@ -7,8 +7,9 @@ import {
   FiHome,
   FiPackage,
   FiPhone,
+  FiClipboard
 } from "react-icons/fi";
-import { FaUserCircle } from "react-icons/fa";
+import { TbUserSquare } from "react-icons/tb";
 import Swal from "sweetalert2";
 
 const Navbar = () => {
@@ -36,10 +37,10 @@ const Navbar = () => {
 
     if (!token) {
       Swal.fire({
-        title: 'Please log in',
-        text: 'You need to log in to access your cart.',
-        icon: 'warning',
-        confirmButtonText: 'OK',
+        title: "Please log in",
+        text: "You need to log in to access your cart.",
+        icon: "warning",
+        confirmButtonText: "OK",
       }).then(() => {
         navigate("/login");
       });
@@ -47,7 +48,7 @@ const Navbar = () => {
       navigate("/my-cart");
     }
   };
-  
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -103,7 +104,7 @@ const Navbar = () => {
                     className="relative inline-block text-left"
                     ref={dropdownRef}
                   >
-                    <FaUserCircle
+                    <TbUserSquare
                       className="h-8 w-8 text-black cursor-pointer"
                       onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                     />
@@ -115,6 +116,13 @@ const Navbar = () => {
                           onClick={() => setIsDropdownOpen(false)}
                         >
                           Profile
+                        </Link>
+                        <Link
+                          to="/my-orders" 
+                          className="block px-4 py-2 text-md text-black hover:bg-gray-100"
+                          onClick={() => setIsDropdownOpen(false)}
+                        >
+                          My Orders
                         </Link>
                         <button
                           onClick={() => {
@@ -201,9 +209,20 @@ const Navbar = () => {
               <FiPhone className="h-5 w-5 text-red-600" />
               <span>Contact Us</span>
             </Link>
+            <Link
+              to="/my-orders"
+              className="flex items-center space-x-2 px-4 py-2 text-lg font-medium hover:bg-gray-100"
+              onClick={() => setIsSidebarOpen(false)}
+            >
+              <FiClipboard className="h-5 w-5 text-purple-600" />
+              <span>My Orders</span>
+            </Link>
             <button
               className="flex items-center space-x-2 px-4 py-2 text-lg font-medium hover:bg-gray-100"
-              onClick={() => {handleCartClick();setIsSidebarOpen(false)}}
+              onClick={() => {
+                handleCartClick();
+                setIsSidebarOpen(false);
+              }}
             >
               <FiShoppingCart className="h-5 w-5 text-orange-600" />
               <span>Cart</span>

@@ -74,7 +74,6 @@ const CategoryPage = () => {
         <div className="text-center">No categories available</div>
       ) : (
         categories.map((category, index) => {
-          // Create a new ref for each category if it doesn't already exist
           if (!scrollRefs.current[index]) {
             scrollRefs.current[index] = React.createRef();
           }

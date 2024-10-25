@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import fashionImage from "../assets/images/fashion-image.jpg";
 import Swal from "sweetalert2";
-import { FaTrash } from "react-icons/fa"; // Import the Trash icon
+import { FaTrash } from "react-icons/fa"; 
 
 const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -64,8 +64,6 @@ const CartPage = () => {
       if (!response.ok) {
         throw new Error("Failed to remove item from cart");
       }
-
-      // Update the cart items in state
       setCartItems(cartItems.filter((item) => item.product._id !== productId));
       Swal.fire({
         icon: "success",
@@ -85,7 +83,7 @@ const CartPage = () => {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <p className="text-2xl font-semibold">Loading categories...</p>
+          <p className="text-2xl font-semibold">Loading products in Carts...</p>
           <div className="loader mt-4"></div>
         </div>
       </div>
@@ -122,7 +120,6 @@ const CartPage = () => {
                     </p>
                     <p className="text-gray-600">Quantity: {item.quantity}</p>
                   </div>
-                  {/* Price and delete button for small screens */}
                   <div className="flex flex-col sm:flex-row items-start sm:items-center">
                     <span className="text-lg font-bold">
                       Total: Rs.
@@ -144,7 +141,7 @@ const CartPage = () => {
               </h2>
               <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
                 <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-200">
-                  Buy Now
+                  <a href="/buy-now">Buy Now</a>
                 </button>
                 <button className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 transition duration-200">
                   <a href="/categoryList">Continue Shopping</a>

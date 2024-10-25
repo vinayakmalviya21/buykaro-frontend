@@ -57,7 +57,6 @@ export default function ProfilePage(props) {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* Profile Section */}
       <div className="bg-white shadow-md rounded-lg p-6 mb-8">
         <h1 className="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500 mb-4">
           Profile Details

@@ -1,75 +1,116 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import fashionImage from "../assets/images/fashion-image.jpg";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
-const BuyNow = () => {
-  const products = [
-    {
-      id: 1,
-      name: "Amazing Product 1",
-      price: 4999, // Price in INR
-      description: "This is an amazing product that you will love!",
-      image: fashionImage,
-    },
-    {
-      id: 2,
-      name: "Amazing Product 2",
-      price: 5999, // Price in INR
-      description: "This is another fantastic product for you!",
-      image: fashionImage,
-    },
-    {
-      id: 3,
-      name: "Amazing Product 3",
-      price: 3999, // Price in INR
-      description: "You'll absolutely love this amazing product!",
-      image: fashionImage,
-    },
-  ];
-
+const BuyNowPage = () => {
+  const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [quantities, setQuantities] = useState(products.map(() => 1)); 
   const [address, setAddress] = useState("");
-  const [offer, setOffer] = useState("");
-  const [discount, setDiscount] = useState(0);
+  const [city, setCity] = useState("");
+  const [postalCode, setPostalCode] = useState("");
+  const [country, setCountry] = useState("");
+  const [mobileNumber, setMobileNumber] = useState("");
+  const navigate = useNavigate();
 
-  // Calculate total amount
-  const totalAmount = products.reduce(
-    (acc, product, index) => acc + product.price * quantities[index],
-    0
-  );
+  useEffect(() => {
+    const fetchCartItems = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/cart`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
-  const handleQuantityChange = (index, value) => {
-    const newQuantities = [...quantities];
-    newQuantities[index] = Math.max(0, value); 
-    setQuantities(newQuantities);
-  };
+        if (!response.ok) {
+          throw new Error("Failed to fetch cart items");
+        }
 
-  const handleOfferChange = (e) => {
-    setOffer(e.target.value);
-    if (e.target.value === "DISCOUNT10") {
-      setDiscount(500); 
-    } else {
-      setDiscount(0);
-    }
-  };
+        const data = await response.json();
+        setCartItems(data.cartItems);
+      } catch (error) {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: error.message,
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const handlePayNow = () => {
-    if (!address) {
-      alert("Please enter your address.");
+    fetchCartItems();
+  }, []);
+
+  const totalPrice = cartItems
+    .reduce((acc, item) => acc + item.product.price * item.quantity, 0)
+    .toFixed(2);
+
+  const handlePurchase = async () => {
+    if (!address || !city || !postalCode || !country || !mobileNumber) {
+      Swal.fire({
+        icon: "error",
+        title: "Missing Information",
+        text: "Please fill in all required fields.",
+      });
       return;
     }
-    alert(
-      `Payment of ₹${(totalAmount - discount).toFixed(
-        2
-      )} processed for ${address}`
-    );
+
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/order`, 
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`, 
+          },
+          body: JSON.stringify({
+            orderItems: cartItems.map((item) => ({
+              product: item.product._id,
+              quantity: item.quantity,
+              price: item.product.price,
+            })),
+            shippingAddress: { address, city, postalCode, country },
+            totalPrice: parseFloat(totalPrice), 
+            mobileNumber, 
+          }),
+        }
+      );
+    
+      if (!response.ok) {
+        const errorData = await response.json(); 
+        throw new Error(errorData.message || "Failed to place order");
+      }
+    
+      Swal.fire({
+        icon: "success",
+        title: "Purchase Successful",
+        text: "Your order has been placed!",
+      }).then(() => {
+        navigate("/my-orders");
+      });
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Order Failed",
+        text: error.message,
+      });
+    }
   };
 
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <p className="text-2xl font-semibold">Loading categoties...</p>
+          <p className="text-2xl font-semibold">Loading products...</p>
           <div className="loader mt-4"></div>
         </div>
       </div>
@@ -77,111 +118,122 @@ const BuyNow = () => {
   }
 
   return (
-    <div className="flex justify-center">
-      <div className="container p-6 max-w-6xl flex flex-col md:flex-row gap-8">
-        
-        {/* Product Section */}
-        <div className="w-full md:w-3/5">
-              <h2 className="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500 mb-8 flex justify-center">Buy Now</h2>
-
-          <div className="flex flex-col space-y-8">
-            {products.map((product, index) => (
-              <div
-                key={product.id}
-                className="p-4 border-2 rounded-lg shadow-md flex flex-col md:flex-row items-center"
-              >
-                <img
-                  src={product.images[0]}
-                  alt={product.name}
-                  className="w-full md:w-1/4 h-40 object-cover rounded-lg mb-4 md:mb-0"
-                />
-                <div className="md:ml-6 flex-grow text-center md:text-left">
-                  <h2 className="text-xl font-semibold">{product.name}</h2>
-                  <p className="text-gray-600 mb-4">{product.description}</p>
-                  <span className="text-lg font-bold block mb-4">
-                    Price: ₹{product.price.toFixed(2)}
-                  </span>
-
-                  <div className="mb-4 flex items-center justify-center md:justify-start">
-                    <label className="block mb-1 mr-2">Quantity:</label>
-                    <div className="flex items-center border rounded-lg overflow-hidden">
-                      <button
-                        onClick={() =>
-                          handleQuantityChange(index, quantities[index] - 1)
-                        }
-                        className="bg-gray-200 px-3 py-1 text-lg"
-                        disabled={quantities[index] <= 0}
-                      >
-                        -
-                      </button>
-                      <input
-                        type="text"
-                        value={quantities[index]}
-                        readOnly
-                        className="w-12 text-center border-none outline-none p-1"
-                      />
-                      <button
-                        onClick={() =>
-                          handleQuantityChange(index, quantities[index] + 1)
-                        }
-                        className="bg-gray-200 px-3 py-1 text-lg"
-                      >
-                        +
-                      </button>
-                    </div>
+    <div className="container mx-auto p-4 flex flex-col md:flex-row">
+      <div className="flex-grow">
+        <h1 className="text-3xl font-bold mb-6 text-center text-purple-800">
+          Buy Now
+        </h1>
+        <div className="bg-white shadow-lg rounded-lg p-6">
+          {cartItems.length === 0 ? (
+            <p className="text-center text-gray-500">Your cart is empty.</p>
+          ) : (
+            <ul className="space-y-4">
+              {cartItems.map((item) => (
+                <li
+                  key={item._id}
+                  className="flex flex-row items-start border-b py-4"
+                >
+                  <img
+                    src={item.product.images[0] || fashionImage}
+                    alt={item.product.name}
+                    className="w-24 h-20 object-cover rounded-lg mb-2 sm:mb-0 sm:mr-4"
+                  />
+                  <div className="flex-grow">
+                    <h2 className="font-semibold text-lg sm:text-xl mb-1 text-blue-600">
+                      {item.product.name}
+                    </h2>
+                    <p className="text-gray-600">
+                      Price: ₹{item.product.price.toFixed(2)}
+                    </p>
+                    <p className="text-gray-600">Quantity: {item.quantity}</p>
                   </div>
-                </div>
-              </div>
-            ))}
-          </div>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
+      </div>
 
-        {/* Pay Now Section */}
-        <div className="w-full md:w-2/5 bg-white shadow-md rounded-lg p-6">
-          <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-green-500 mb-2 text-center">Order Summary</h2>
-
-          <div className="mb-4">
-            <label className="block mb-1 text-start">Address:</label>
-            <input
-              type="text"
+      <div className="md:w-1/3 md:ml-6 mt-6 md:mt-0">
+        <h2 className="text-2xl font-bold mb-4 text-purple-800">
+          Billing Summary
+        </h2>
+        <div className="bg-white shadow-lg rounded-lg p-6">
+          <h3 className="text-lg font-semibold mb-2">Total Amount:</h3>
+          <p className="text-xl font-bold text-blue-600">₹ {totalPrice}</p>
+          <form className="flex flex-col mt-4">
+            <label className="text-sm font-semibold mb-1" htmlFor="address">
+              Address:
+            </label>
+            <textarea
+              id="address"
               value={address}
               onChange={(e) => setAddress(e.target.value)}
-              className="border rounded w-full p-2"
-              placeholder="Enter your address"
               required
+              rows="3"
+              className="border rounded-lg p-2 mb-4"
+              placeholder="Enter your address"
             />
-          </div>
-
-          <div className="mb-4">
-            <label className="block mb-1 text-start">Offer Code:</label>
+            <label className="text-sm font-semibold mb-1" htmlFor="city">
+              City:
+            </label>
             <input
               type="text"
-              value={offer}
-              onChange={handleOfferChange}
-              className="border rounded w-full p-2"
-              placeholder="Enter offer code"
+              id="city"
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              required
+              className="border rounded-lg p-2 mb-4"
+              placeholder="Enter your city"
             />
-          </div>
-
-          <div className="mb-4 text-start">
-            <span className="block mb-1 font-bold">Discount: ₹{discount}</span>
-            <span className="block mb-1 font-bold">
-              Total Amount to Pay: ₹{(totalAmount - discount).toFixed(2)}
-            </span>
-          </div>
-
-          <div className="text-center">
+            <label className="text-sm font-semibold mb-1" htmlFor="postalCode">
+              Postal Code:
+            </label>
+            <input
+              type="text"
+              id="postalCode"
+              value={postalCode}
+              onChange={(e) => setPostalCode(e.target.value)}
+              required
+              className="border rounded-lg p-2 mb-4"
+              placeholder="Enter your postal code"
+            />
+            <label className="text-sm font-semibold mb-1" htmlFor="country">
+              Country:
+            </label>
+            <input
+              type="text"
+              id="country"
+              value={country}
+              onChange={(e) => setCountry(e.target.value)}
+              required
+              className="border rounded-lg p-2 mb-4"
+              placeholder="Enter your country"
+            />
+            <label className="text-sm font-semibold mb-1" htmlFor="mobile">
+              Mobile Number:
+            </label>
+            <input
+              type="tel"
+              id="mobile"
+              value={mobileNumber}
+              onChange={(e) => setMobileNumber(e.target.value)}
+              required
+              className="border rounded-lg p-2 mb-4"
+              placeholder="Enter your mobile number"
+            />
             <button
-              onClick={handlePayNow}
-              className="bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600 transition duration-200"
+              type="button"
+              onClick={handlePurchase}
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-200"
             >
               Pay Now
             </button>
-          </div>
+          </form>
         </div>
       </div>
     </div>
   );
 };
 
-export default BuyNow;
+export default BuyNowPage;

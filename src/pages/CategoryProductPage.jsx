@@ -79,7 +79,6 @@ const CategoryProductPage = () => {
           {products.length > 0 && products[0].category.description}
         </p>
 
-        {/* Flex container for products */}
         <div className="flex flex-wrap -mx-4 cursor-pointer">
           {Array.isArray(products) &&
             products.map((product, index) => (
