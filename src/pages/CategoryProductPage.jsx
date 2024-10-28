@@ -33,7 +33,7 @@ const CategoryProductPage = () => {
       setProducts(data);
       setFilteredProducts(data);
 
-      const uniqueBrands = [...new Set(data.map((product) => product.brand))];
+      const uniqueBrands = [...new Set(data.map((product) => product.brand || product.author))];
       setBrands(uniqueBrands);
     } catch (error) {
       setError(error.message);
@@ -60,7 +60,7 @@ const CategoryProductPage = () => {
 
     if (selectedBrands.length > 0) {
       filtered = filtered.filter((product) =>
-        selectedBrands.includes(product.brand)
+        selectedBrands.includes(product.brand || product.author)
       );
     }
 
