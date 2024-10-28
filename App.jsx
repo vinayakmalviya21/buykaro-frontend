@@ -10,7 +10,7 @@ import CategoryPage from "./src/pages/CategoryPage";
 import ProfilePage from "./src/pages/ProfilePage";
 import MyCartPage from "./src/pages/MyCartPage";
 import BuyNow from "./src/pages/BuyNow";
-import Signup from "./src/pages/SignUp";
+import Signup from "./src/pages/Signup";
 import Login from "./src/pages/Login";
 import { userHook } from "./src/context/UserContext";
 import MyOrders from "./src/pages/MyOrders";
