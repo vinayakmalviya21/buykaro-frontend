@@ -155,13 +155,11 @@ const BuyNowPage = () => {
       </div>
 
       <div className="md:w-1/3 md:ml-6 mt-6 md:mt-0">
-        <h2 className="text-2xl font-bold mb-4 text-purple-800">
+        <h2 className="text-2xl font-bold text-purple-800">
           Billing Summary
         </h2>
         <div className="bg-white shadow-lg rounded-lg p-6">
-          <h3 className="text-lg font-semibold mb-2">Total Amount:</h3>
-          <p className="text-xl font-bold text-blue-600">₹ {totalPrice}</p>
-          <form className="flex flex-col mt-4">
+          <form className="flex flex-col ">
             <label className="text-sm font-semibold mb-1" htmlFor="address">
               Address:
             </label>
@@ -222,10 +220,12 @@ const BuyNowPage = () => {
               className="border rounded-lg p-2 mb-4"
               placeholder="Enter your mobile number"
             />
+            <h3 className="text-lg font-semibold mb-2">Total Amount:</h3>
+            <p className="text-xl font-bold text-blue-600">₹ {totalPrice}</p>
             <button
               type="button"
               onClick={handlePurchase}
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-200"
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-200 my-2"
             >
               Pay Now
             </button>

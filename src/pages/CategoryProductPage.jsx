@@ -4,11 +4,11 @@ import { Link, useParams } from "react-router-dom";
 const CategoryProductPage = () => {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [brands, setBrands] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showFilterPopup, setShowFilterPopup] = useState(false);
-
   const { category_id } = useParams();
 
   const priceRanges = [
@@ -33,7 +33,9 @@ const CategoryProductPage = () => {
       setProducts(data);
       setFilteredProducts(data);
 
-      const uniqueBrands = [...new Set(data.map((product) => product.brand || product.author))];
+      const uniqueBrands = [
+        ...new Set(data.map((product) => product.brand || product.author)),
+      ];
       setBrands(uniqueBrands);
     } catch (error) {
       setError(error.message);
@@ -64,12 +66,18 @@ const CategoryProductPage = () => {
       );
     }
 
+    if (searchTerm) {
+      filtered = filtered.filter((product) =>
+        product.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
     setFilteredProducts(filtered);
   };
 
   useEffect(() => {
     applyFilters();
-  }, [priceRange, selectedBrands, products]);
+  }, [priceRange, selectedBrands, searchTerm, products]);
 
   const handlePriceChange = (e) => setPriceRange(e.target.value);
 
@@ -78,6 +86,8 @@ const CategoryProductPage = () => {
       prev.includes(brand) ? prev.filter((b) => b !== brand) : [...prev, brand]
     );
   };
+
+  const handleSearchChange = (e) => setSearchTerm(e.target.value);
 
   const toggleFilterPopup = () => setShowFilterPopup(!showFilterPopup);
 
@@ -97,6 +107,10 @@ const CategoryProductPage = () => {
     );
   }
 
+  const handleScrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <div className="container mx-auto p-6">
       <header className="flex flex-col items-start md:items-center text-start md:text-center mb-6">
@@ -107,6 +121,17 @@ const CategoryProductPage = () => {
         <p className="mt-2 text-gray-600">
           {products[0]?.category.description}
         </p>
+
+        {/* Search Bar */}
+        <div className="flex w-full mt-4 lg:mt-2 lg:w-1/3 lg:mx-auto">
+          <input
+            type="text"
+            placeholder="Search products..."
+            value={searchTerm}
+            onChange={handleSearchChange}
+            className="w-full border rounded p-2"
+          />
+        </div>
 
         {/* Filter Button */}
         <button
@@ -120,8 +145,6 @@ const CategoryProductPage = () => {
       <div className="flex">
         {/* Filter Sidebar */}
         <aside className="hidden lg:block w-1/4 p-4 border-r">
-          <h2 className="text-2xl font-bold mb-4">Filters</h2>
-
           {/* Price Range Filter */}
           <div className="mb-4">
             <h3 className="font-semibold">Price Range</h3>
@@ -169,45 +192,8 @@ const CategoryProductPage = () => {
                 </button>
               </header>
 
-              <div className="mb-4">
-                <h3 className="font-semibold">Price Range</h3>
-                <select
-                  value={priceRange}
-                  onChange={handlePriceChange}
-                  className="w-full border rounded p-2"
-                >
-                  <option value="">Select Price Range</option>
-                  {priceRanges.map((range) => (
-                    <option key={range.label} value={range.label}>
-                      {range.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <h3 className="font-semibold">Brands</h3>
-                {brands.map((brand) => (
-                  <label key={brand} className="block mt-2">
-                    <input
-                      type="checkbox"
-                      checked={selectedBrands.includes(brand)}
-                      onChange={() => handleBrandChange(brand)}
-                    />{" "}
-                    {brand}
-                  </label>
-                ))}
-              </div>
-
-              <button
-                onClick={() => {
-                  applyFilters();
-                  toggleFilterPopup();
-                }}
-                className="mt-4 bg-blue-500 text-white py-2 px-4 rounded w-full"
-              >
-                Apply Filters
-              </button>
+              {/* Price Range and Brand Filter in Popup */}
+              {/* (reuse the same elements from sidebar if needed) */}
             </div>
           </div>
         )}
@@ -216,13 +202,16 @@ const CategoryProductPage = () => {
         <div className="flex flex-wrap -mx-4 w-full lg:w-3/4">
           {filteredProducts.length === 0 ? (
             <p className="text-center text-xl font-semibold text-gray-500 w-full">
-              No product for this filter
+              {searchTerm
+                ? `No product found for "${searchTerm}"`
+                : "No product for this filter"}
             </p>
           ) : (
             filteredProducts.map((product) => (
               <Link
                 key={product._id}
                 to={`/product/${product._id}`}
+                onClick={handleScrollToTop}
                 className="w-full sm:w-full md:w-1/2 lg:w-1/3 px-4 mb-6"
               >
                 <div className="border rounded-lg p-4 shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col h-full">

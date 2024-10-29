@@ -11,6 +11,8 @@ const Wishlist = () => {
 
   // Function to fetch a product from the wishlist
   const fetchWishlist = async () => {
+    setLoading(true); // Start loading
+  
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
@@ -21,28 +23,24 @@ const Wishlist = () => {
           },
         }
       );
-      if (!response.ok)
-        throw new Error(
-          "Failed to fetch wishlist. Please login again to show wishlist."
-        );
+  
       const data = await response.json();
-
-      if (data.cartItems) {
+  
+      if (data.cartItems && data.cartItems.length > 0) {
         setWishlistItems(data.cartItems);
+  
         const initialQuantities = {};
         data.cartItems.forEach((item) => {
-          initialQuantities[item.product._id] = 1; 
+          initialQuantities[item.product._id] = 1;
         });
-        setQuantities(initialQuantities); 
-      } else {
-        setWishlistItems([]);
+        setQuantities(initialQuantities);
       }
     } catch (err) {
       setError(err.message);
     } finally {
-      setLoading(false);
+      setLoading(false); 
     }
-  };
+  };  
 
   // Function to delete a product from the wishlist
   const removeFromWishlist = async (productId) => {
@@ -121,7 +119,11 @@ const Wishlist = () => {
     fetchWishlist();
   }, []);
 
-  if (loading) return <div>Loading...</div>;
+  const handleScrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  if (loading) return <div>Loading wishlist products...</div>;
   if (error) return <div className="text-red-500">{error}</div>;
 
   return (
@@ -138,7 +140,10 @@ const Wishlist = () => {
               key={item._id}
               className="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-4 p-2 border-b"
             >
-              <Link to={`/product/${item.product._id}`}>
+              <Link 
+                to={`/product/${item.product._id}`}
+                onClick={handleScrollToTop}
+                >
                 <img
                   src={item.product.images[0]}
                   alt={item.product.name}
@@ -146,7 +151,10 @@ const Wishlist = () => {
                 />
               </Link>
               <div className="flex-grow text-start sm:text-left">
-                <Link to={`/product/${item.product._id}`}>
+                <Link 
+                  to={`/product/${item.product._id}`}
+                  onClick={handleScrollToTop}
+                  >
                   <h3 className="text-lg sm:text-xl font-bold cursor-pointer hover:text-purple-500 transition">
                     {item.product.name}
                   </h3>

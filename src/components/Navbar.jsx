@@ -7,7 +7,7 @@ import {
   FiHome,
   FiPackage,
   FiPhone,
-  FiClipboard
+  FiClipboard,
 } from "react-icons/fi";
 import { TbUserSquare } from "react-icons/tb";
 import Swal from "sweetalert2";
@@ -19,6 +19,11 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   const user = JSON.parse(localStorage.getItem("user"));
+
+  const handleLinkClick = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    setIsSidebarOpen(false);
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -78,23 +83,29 @@ const Navbar = () => {
                 <Link
                   to="/"
                   className="relative text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-md font-medium after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-blue-500 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 after:origin-left"
+                  onClick={handleLinkClick}
                 >
                   Home
                 </Link>
                 <Link
                   to="/categoryList"
                   className="relative text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-md font-medium after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-blue-500 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 after:origin-left"
+                  onClick={handleLinkClick}
                 >
                   Categories
                 </Link>
                 <Link
                   to="/contact"
                   className="relative text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-md font-medium after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-blue-500 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 after:origin-left"
+                  onClick={handleLinkClick}
                 >
                   Contact Us
                 </Link>
                 <button
-                  onClick={handleCartClick}
+                  onClick={() => {
+                    handleCartClick();
+                    handleLinkClick();
+                  }}
                   className="relative text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-md font-medium after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-blue-500 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 after:origin-left"
                 >
                   Cart <FiShoppingCart className="inline h-5 w-5" />
@@ -113,14 +124,20 @@ const Navbar = () => {
                         <Link
                           to="/profile"
                           className="block px-4 py-2 text-md text-black hover:bg-gray-100"
-                          onClick={() => setIsDropdownOpen(false)}
+                          onClick={() => {
+                            setIsDropdownOpen(false);
+                            handleLinkClick();
+                          }}
                         >
                           Profile
                         </Link>
                         <Link
-                          to="/my-orders" 
+                          to="/my-orders"
                           className="block px-4 py-2 text-md text-black hover:bg-gray-100"
-                          onClick={() => setIsDropdownOpen(false)}
+                          onClick={() => {
+                            setIsDropdownOpen(false);
+                            handleLinkClick();
+                          }}
                         >
                           My Orders
                         </Link>
@@ -140,6 +157,7 @@ const Navbar = () => {
                   <Link
                     to="/login"
                     className="ml-4 bg-gradient-to-r from-purple-600 to-blue-500 text-white py-2 px-4 rounded-md font-medium hover:bg-blue-600 transition duration-300 transform hover:scale-105"
+                    onClick={handleLinkClick}
                   >
                     Sign In
                   </Link>
@@ -188,7 +206,7 @@ const Navbar = () => {
             <Link
               to="/"
               className="flex items-center space-x-2 px-4 py-2 text-lg font-medium hover:bg-gray-100"
-              onClick={() => setIsSidebarOpen(false)}
+              onClick={handleLinkClick}
             >
               <FiHome className="h-5 w-5 text-blue-600" />
               <span>Home</span>
@@ -196,7 +214,7 @@ const Navbar = () => {
             <Link
               to="/categoryList"
               className="flex items-center space-x-2 px-4 py-2 text-lg font-medium hover:bg-gray-100"
-              onClick={() => setIsSidebarOpen(false)}
+              onClick={handleLinkClick}
             >
               <FiPackage className="h-5 w-5 text-green-600" />
               <span>Categories</span>
@@ -204,7 +222,7 @@ const Navbar = () => {
             <Link
               to="/contact"
               className="flex items-center space-x-2 px-4 py-2 text-lg font-medium hover:bg-gray-100"
-              onClick={() => setIsSidebarOpen(false)}
+              onClick={handleLinkClick}
             >
               <FiPhone className="h-5 w-5 text-red-600" />
               <span>Contact Us</span>
@@ -212,7 +230,7 @@ const Navbar = () => {
             <Link
               to="/my-orders"
               className="flex items-center space-x-2 px-4 py-2 text-lg font-medium hover:bg-gray-100"
-              onClick={() => setIsSidebarOpen(false)}
+              onClick={handleLinkClick}
             >
               <FiClipboard className="h-5 w-5 text-purple-600" />
               <span>My Orders</span>
@@ -221,20 +239,17 @@ const Navbar = () => {
               className="flex items-center space-x-2 px-4 py-2 text-lg font-medium hover:bg-gray-100"
               onClick={() => {
                 handleCartClick();
-                setIsSidebarOpen(false);
+                handleLinkClick();
               }}
             >
               <FiShoppingCart className="h-5 w-5 text-orange-600" />
               <span>Cart</span>
             </button>
-
             <div className="mt-4 flex flex-col items-start ml-4 gap-4">
               {user ? (
                 <>
                   <button
-                    onClick={() => {
-                      setIsSidebarOpen(false);
-                    }}
+                    onClick={() => setIsSidebarOpen(false)}
                     className="bg-gradient-to-r from-purple-600 to-blue-500 text-white py-2 px-4 rounded-md font-medium hover:bg-blue-600 transition duration-300 transform hover:scale-105"
                   >
                     <Link to="/profile">Profile</Link>
@@ -244,16 +259,16 @@ const Navbar = () => {
                       handleLogout();
                       setIsSidebarOpen(false);
                     }}
-                    className="bg-gradient-to-r from-purple-600 to-blue-500 text-white py-2 px-4 rounded-md font-medium hover:bg-blue-600 transition duration-300 transform hover:scale-105"
+                    className="mt-4 bg-gradient-to-r from-blue-600 to-red-500 text-white py-2 px-4 rounded-md font-medium hover:bg-red-600 transition duration-300 transform hover:scale-105"
                   >
-                    <span>Logout</span>
+                    Logout
                   </button>
                 </>
               ) : (
                 <Link
                   to="/login"
                   className="bg-gradient-to-r from-purple-600 to-blue-500 text-white py-2 px-4 rounded-md font-medium hover:bg-blue-600 transition duration-300 transform hover:scale-105"
-                  onClick={() => setIsSidebarOpen(false)}
+                  onClick={handleLinkClick}
                 >
                   Sign In
                 </Link>

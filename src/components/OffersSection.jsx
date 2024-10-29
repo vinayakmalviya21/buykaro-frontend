@@ -29,6 +29,10 @@ export default function OffersSection() {
     },
   ];
 
+  const handleScrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <div className="py-8">
       <div className="container mx-auto px-6 text-center">
@@ -64,6 +68,7 @@ export default function OffersSection() {
 
                 <a
                   href={offer.link}
+                  onClick={handleScrollToTop}
                   className="mt-auto inline-block bg-gradient-to-r from-purple-600 to-blue-500 text-white py-2 px-4 rounded-md font-medium hover:bg-blue-600 transition duration-300 transform hover:scale-105"
                 >
                   Shop Now

@@ -3,6 +3,10 @@ import { FiFacebook, FiTwitter, FiInstagram, FiLinkedin } from "react-icons/fi";
 import { Link } from "react-router-dom"; 
 
 export default function Footer() {
+  const handleScrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <footer className="bg-white border-t border-gray-200">
       <div className="max-w-7xl mx-auto px-4 py-6">
@@ -11,17 +15,17 @@ export default function Footer() {
             <h2 className="text-lg font-bold text-gray-800">Quick Links</h2>
             <ul className="mt-2 space-y-2">
               <li>
-                <Link to="/" className="text-gray-700 hover:text-blue-600">
+                <Link to="/" onClick={handleScrollToTop} className="text-gray-700 hover:text-blue-600">
                   Home
                 </Link>
               </li>
               <li>
-                <Link to="/categoryList" className="text-gray-700 hover:text-blue-600">
+                <Link to="/categoryList" onClick={handleScrollToTop} className="text-gray-700 hover:text-blue-600">
                   Categories
                 </Link>
               </li>
               <li>
-                <Link to="/contact" className="text-gray-700 hover:text-blue-600">
+                <Link to="/contact" onClick={handleScrollToTop} className="text-gray-700 hover:text-blue-600">
                   Contact Us
                 </Link>
               </li>
@@ -37,16 +41,16 @@ export default function Footer() {
           <div className="mb-4 md:mb-0">
             <h2 className="text-lg font-bold text-gray-800">Follow Us</h2>
             <div className="flex space-x-4 mt-2">
-              <a href="#" className="text-gray-700 hover:text-blue-600">
+              <a href="/" onClick={handleScrollToTop} className="text-gray-700 hover:text-blue-600">
                 <FiFacebook className="h-6 w-6" />
               </a>
-              <a href="#" className="text-gray-700 hover:text-blue-600">
+              <a href="/" onClick={handleScrollToTop} className="text-gray-700 hover:text-blue-600">
                 <FiTwitter className="h-6 w-6" />
               </a>
-              <a href="#" className="text-gray-700 hover:text-blue-600">
+              <a href="/" onClick={handleScrollToTop} className="text-gray-700 hover:text-blue-600">
                 <FiInstagram className="h-6 w-6" />
               </a>
-              <a href="#" className="text-gray-700 hover:text-blue-600">
+              <a href="/" onClick={handleScrollToTop} className="text-gray-700 hover:text-blue-600">
                 <FiLinkedin className="h-6 w-6" />
               </a>
             </div>

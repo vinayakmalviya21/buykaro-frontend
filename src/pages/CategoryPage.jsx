@@ -38,6 +38,10 @@ const CategoryPage = () => {
     }
   };
 
+  const handleScrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   const scrollLeft = (index) => {
     if (scrollRefs.current[index] && scrollRefs.current[index].current) {
       scrollRefs.current[index].current.scrollBy({
@@ -51,7 +55,7 @@ const CategoryPage = () => {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <p className="text-2xl font-semibold">Loading categoties...</p>
+          <p className="text-2xl font-semibold">Loading categories...</p>
           <div className="loader mt-4"></div>
         </div>
       </div>
@@ -109,6 +113,7 @@ const CategoryPage = () => {
                   <Link
                     key={product._id}
                     to={`/categories-Product/${category._id}`}
+                    onClick={handleScrollToTop}
                   >
                     <div
                       className="cursor-pointer flex-shrink-0 w-48 border p-3 rounded-lg shadow-sm hover:shadow-lg transition duration-300 flex flex-col"

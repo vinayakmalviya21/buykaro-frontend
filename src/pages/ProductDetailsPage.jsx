@@ -149,7 +149,7 @@ const ProductDetailsPage = () => {
                   "Content-Type": "application/json",
                   Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify({ productId, quantity }), 
+                body: JSON.stringify({ productId, quantity }),
               }
             );
 
@@ -180,8 +180,8 @@ const ProductDetailsPage = () => {
             });
           }
           break;
-          
-          default:
+
+        default:
           break;
       }
     }
@@ -372,7 +372,9 @@ const ProductDetailsPage = () => {
                   className={`mt-2 ${
                     deliveryTime === "Invalid pincode"
                       ? "text-red-500"
-                      : "text-gray-700"
+                      : deliveryTime === "Delivery available in 3-4 days"
+                      ? "text-green-500"
+                      : "text-yellow-500"
                   }`}
                 >
                   {deliveryTime}

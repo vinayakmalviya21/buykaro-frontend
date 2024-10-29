@@ -2,6 +2,11 @@ import React from "react";
 import { Typewriter } from "react-simple-typewriter";
 
 export default function HeroSection() {
+
+  const handleScrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <div className="bg-gradient-to-r from-blue-500 to-purple-700 h-screen">
       <div className="flex items-center justify-center h-full bg-black bg-opacity-60">
@@ -24,7 +29,7 @@ export default function HeroSection() {
           <p className="text-gray-200 text-lg md:text-2xl mb-8">
             Shop the best deals and latest trends at unbeatable prices.
           </p>
-          <a href="/categoryList">
+          <a href="/categoryList" onClick={handleScrollToTop}>
             <button className="bg-yellow-500 text-black font-semibold py-3 px-6 rounded-full hover:bg-yellow-600 transition duration-300 shadow-lg transform hover:scale-105">
               Shop Now
             </button>

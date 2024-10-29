@@ -9,6 +9,8 @@ const CartPage = () => {
 
   useEffect(() => {
     const fetchCartItems = async () => {
+      setLoading(true); 
+  
       try {
         const token = localStorage.getItem("token");
         const response = await fetch(
@@ -21,24 +23,20 @@ const CartPage = () => {
             },
           }
         );
-
+  
         if (!response.ok) {
           throw new Error("Failed to fetch cart items");
         }
-
+  
         const data = await response.json();
         setCartItems(data.cartItems);
       } catch (error) {
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: error.message,
-        });
+        console.log(error);
       } finally {
-        setLoading(false);
+        setLoading(false); 
       }
     };
-
+  
     fetchCartItems();
   }, []);
 
@@ -97,7 +95,7 @@ const CartPage = () => {
       </h1>
       <div className="bg-white shadow-lg rounded-lg p-6">
         {cartItems.length === 0 ? (
-          <p className="text-center text-gray-500">Your cart is empty.</p>
+          <p className="text-center font-bold text-gray-500 h-96 flex items-center justify-center">Your cart is empty.</p>
         ) : (
           <div>
             <ul className="space-y-4">

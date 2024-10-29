@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Swal from "sweetalert2";
 import { FaPhoneAlt, FaMapMarkerAlt, FaEnvelope } from "react-icons/fa";
 
 export default function ContactUsPage() {
@@ -35,14 +36,18 @@ export default function ContactUsPage() {
       );
 
       if (response.ok) {
-        alert("Message sent successfully!");
+        Swal("Success!", "Message sent successfully!", "success");
         setFormData({ name: "", email: "", message: "" });
       } else {
-        alert("Failed to send message, please try again later.");
+        Swal(
+          "Oops!",
+          "Failed to send message, please try again later.",
+          "error"
+        );
       }
     } catch (error) {
       console.error("Error:", error);
-      alert("An error occurred while sending the message.");
+      Swal("Error!", "An error occurred while sending the message.", "error");
     } finally {
       setIsSubmitting(false);
     }
