@@ -60,15 +60,13 @@ const ProductDetailsPage = () => {
 
   const handlePincodeSubmit = (e) => {
     e.preventDefault();
-
+  
     if (/^\d{6}$/.test(pincode)) {
       setDeliveryTime("Delivery available in 3-4 days");
-    } else if (pincode.length > 8 || pincode.length < 6) {
-      setDeliveryTime("Invalid pincode");
     } else {
-      setDeliveryTime("Delivery time may vary for this pincode");
+      setDeliveryTime("Invalid pincode");
     }
-  };
+  };  
 
   const renderStars = (rating) => {
     const totalStars = 5;

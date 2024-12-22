@@ -17,20 +17,32 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
+    // Validate password length
+    if (password.length < 4 || password.length > 10) {
+      Swal.fire({
+        icon: "error",
+        title: "Invalid Password",
+        text: "Password must be between 4 and 10 characters.",
+        confirmButtonText: "Okay",
+      });
+      return; // Stop execution if validation fails
+    }
+  
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/users/login`,
         { email, password }
       );
-
+  
       if (response.status === 200) {
         const { token, user } = response.data;
-
+  
         setUser(user);
-
+  
         localStorage.setItem("token", token);
         localStorage.setItem("user", JSON.stringify(user));
-
+  
         Swal.fire({
           icon: "success",
           title: "Login Successful!",
@@ -48,13 +60,13 @@ const Login = () => {
     } catch (error) {
       console.error("Error details:", error);
       let errorMessage = "An error occurred. Please try again.";
-
+  
       if (error.response) {
         errorMessage = error.response.data.message || "Failed to log in.";
       } else if (error.request) {
         errorMessage = "No response from the server. Please try again.";
       }
-
+  
       Swal.fire({
         icon: "error",
         title: "Login Error",
@@ -65,7 +77,7 @@ const Login = () => {
       setEmail("");
       setPassword("");
     }
-  };
+  };  
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-purple-600">
@@ -106,6 +118,7 @@ const Login = () => {
               onChange={(e) => setPassword(e.target.value)}
               className="border border-gray-300 rounded-lg py-2 px-4 pr-10 w-full focus:outline-none focus:border-blue-500"
               placeholder="********"
+              maxLength={10}
               required
             />
             <button

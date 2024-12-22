@@ -18,7 +18,18 @@ export default function Signup() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
+    // Validate password length
+    if (password.length < 4 || password.length > 10) {
+      Swal.fire({
+        icon: "error",
+        title: "Invalid Password",
+        text: "Password must be between 4 and 10 characters.",
+        confirmButtonText: "Okay",
+      });
+      return; // Stop execution if validation fails
+    }
+  
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/users/signup`,
@@ -30,7 +41,7 @@ export default function Signup() {
           maxBodyLength: Infinity,
         }
       );
-
+  
       if (response.status === 200) {
         Swal.fire({
           icon: "success",
@@ -51,7 +62,7 @@ export default function Signup() {
     } catch (error) {
       console.error("Error details:", error);
       let errorMessage = "An error occurred. Please try again.";
-
+  
       if (error.response) {
         errorMessage = error.response.data.message || "Failed to sign up.";
       } else if (error.request) {
@@ -64,7 +75,7 @@ export default function Signup() {
         confirmButtonText: "Okay",
       });
     }
-  };
+  };  
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-purple-600">
@@ -123,6 +134,7 @@ export default function Signup() {
               placeholder="********"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              maxLength={10}
               required
             />
             <button
