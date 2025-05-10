@@ -52,7 +52,77 @@ const BuyNowPage = () => {
     .reduce((acc, item) => acc + item.product.price * item.quantity, 0)
     .toFixed(2);
 
-  const handlePurchase = async () => {
+  // const handlePurchase = async () => {
+  //   if (!address || !city || !postalCode || !country || !mobileNumber) {
+  //     Swal.fire({
+  //       icon: "error",
+  //       title: "Missing Information",
+  //       text: "Please fill in all required fields.",
+  //     });
+  //     return;
+  //   }
+
+  //   try {
+  //     const token = localStorage.getItem("token");
+  //     const response = await fetch(
+  //       `${import.meta.env.VITE_API_URL}/api/order`,
+  //       {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //         body: JSON.stringify({
+  //           orderItems: cartItems.map((item) => ({
+  //             product: item.product._id,
+  //             quantity: item.quantity,
+  //             price: item.product.price,
+  //           })),
+  //           shippingAddress: { address, city, postalCode, country },
+  //           totalPrice: parseFloat(totalPrice),
+  //           mobileNumber,
+  //         }),
+  //       }
+  //     );
+
+  //     if (!response.ok) {
+  //       const errorData = await response.json();
+  //       throw new Error(errorData.message || "Failed to place order");
+  //     }
+
+  //     Swal.fire({
+  //       icon: "success",
+  //       title: "Purchase Successful",
+  //       text: "Your order has been placed!",
+  //     }).then(() => {
+  //       navigate("/my-orders");
+  //     });
+  //   } catch (error) {
+  //     Swal.fire({
+  //       icon: "error",
+  //       title: "Order Failed",
+  //       text: error.message,
+  //     });
+  //   }
+  // };
+
+  function loadScript(src) {
+    return new Promise((resolve) => {
+      const script = document.createElement("script");
+      script.src = src;
+      script.onload = () => {
+        resolve(true);
+      };
+      script.onerror = () => {
+        resolve(false);
+      };
+      document.body.appendChild(script);
+    });
+  }
+
+  const user_details = localStorage.getItem("user");
+
+  const handlePayment = async () => {
     if (!address || !city || !postalCode || !country || !mobileNumber) {
       Swal.fire({
         icon: "error",
@@ -63,14 +133,27 @@ const BuyNowPage = () => {
     }
 
     try {
+      const res = await loadScript(
+        "https://checkout.razorpay.com/v1/checkout.js"
+      );
+
+      if (!res) {
+        Swal.fire({
+          icon: "error",
+          title: "Order Failed",
+          text: "Razorpay SDK failed to load. Check your Internet Connection.",
+        });
+        return;
+      }
+
       const token = localStorage.getItem("token");
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/order`, 
+      const orderResponse = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/order/payment`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`, 
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
             orderItems: cartItems.map((item) => ({
@@ -79,29 +162,98 @@ const BuyNowPage = () => {
               price: item.product.price,
             })),
             shippingAddress: { address, city, postalCode, country },
-            totalPrice: parseFloat(totalPrice), 
-            mobileNumber, 
+            totalPrice: parseFloat(totalPrice),
+            mobileNumber,
           }),
         }
       );
-    
-      if (!response.ok) {
-        const errorData = await response.json(); 
-        throw new Error(errorData.message || "Failed to place order");
+
+      const orderResponseData = await orderResponse.json();
+
+      const options = {
+        key: `${import.meta.env.VITE_RAZORPAY_KEY}`,
+        currency: orderResponseData?.message?.currency,
+        amount: `${orderResponseData?.message?.amount}`,
+        order_id: orderResponseData?.message?.id,
+        name: "buyKaro",
+        description: "Thank you for Purchasing the Product.",
+        prefill: {
+          name: `${user_details.name}`,
+          email: user_details.email,
+        },
+        handler: async function (response) {
+          await verifyPayment({
+            razorpay_order_id: response.razorpay_order_id,
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_signature: response.razorpay_signature,
+            products: cartItems.map((item) => ({
+              product: item.product._id,
+              quantity: item.quantity,
+              price: item.product.price,
+            })),
+          });
+        },
+      };
+
+      try {
+        const paymentObject = new window.Razorpay(options);
+
+        paymentObject.open();
+
+        paymentObject.on("payment.failed", function (response) {
+          Swal.fire({
+            icon: "error",
+            title: "Oops! Payment Failed.",
+            text:
+              response.error.description ||
+              "Something went wrong with your payment.",
+          });
+          console.log(response.error);
+        });
+      } catch (error) {
+        console.log("PAYMENT API ERROR............", error);
+        Swal.fire({
+          icon: "error",
+          title: "Could Not make Payment.",
+          text:
+            error.message ||
+            "Something went wrong while initializing the payment.",
+        });
       }
-    
-      Swal.fire({
-        icon: "success",
-        title: "Purchase Successful",
-        text: "Your order has been placed!",
-      }).then(() => {
-        navigate("/my-orders");
-      });
     } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const verifyPayment = async (paymentDetails) => {
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/order/verify-payment`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify(paymentDetails),
+        }
+      );
+
+      if (res.ok) {
+        navigate("/my-orders");
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Payment Verification Failed",
+          text: "Your payment could not be verified.",
+        });
+      }
+    } catch (error) {
+      console.error("Payment verification error:", error);
       Swal.fire({
         icon: "error",
-        title: "Order Failed",
-        text: error.message,
+        title: "Verification Error",
+        text: "Something went wrong while verifying the payment.",
       });
     }
   };
@@ -155,9 +307,7 @@ const BuyNowPage = () => {
       </div>
 
       <div className="md:w-1/3 md:ml-6 mt-6 md:mt-0">
-        <h2 className="text-2xl font-bold text-purple-800">
-          Billing Summary
-        </h2>
+        <h2 className="text-2xl font-bold text-purple-800">Billing Summary</h2>
         <div className="bg-white shadow-lg rounded-lg p-6">
           <form className="flex flex-col ">
             <label className="text-sm font-semibold mb-1" htmlFor="address">
@@ -224,7 +374,7 @@ const BuyNowPage = () => {
             <p className="text-xl font-bold text-blue-600">₹ {totalPrice}</p>
             <button
               type="button"
-              onClick={handlePurchase}
+              onClick={handlePayment}
               className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-200 my-2"
             >
               Pay Now
